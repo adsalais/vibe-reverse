@@ -43,7 +43,7 @@ Ask your agent: *"list your reverse-engineering skills"* — you should see
 The skills are instructions; the RE tools install separately. See **`requirements/`**:
 
 - `sh requirements/setup.sh` — install on your host. Python tools (angr, z3) go
-  into a **uv venv** at `$RE_HARNESS_VENV` (default `~/.local/share/re-harness/venv`).
+  into a **venv** at `$RE_HARNESS_VENV` (default `~/.local/share/re-harness/venv`).
 - or `requirements/Dockerfile` — a container with everything preinstalled.
 
 `re-preflight` detects what's missing at runtime and writes per-investigation

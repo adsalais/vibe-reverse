@@ -17,7 +17,8 @@ Recover an input that satisfies a check.
   `templates/angr_skel.py` with FIND/AVOID addresses from `re-static`.
 
 Get the logic and addresses from **`re-static`**. `z3`/`angr` live in the
-harness's uv venv — run them with the venv Python:
+harness's Python — run them with the harness Python (the venv on a host, or the
+global `python3` in the container):
 
 ```sh
 "${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}/bin/python" templates/z3_skel.py

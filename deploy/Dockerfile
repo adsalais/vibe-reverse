@@ -1,26 +1,20 @@
 # syntax=docker/dockerfile:1
 # vibe-reverse — air-gapped RE / malware-analysis image.
-# Plan 1: analyst environment (RE tools + Ghidra + venv + opencode + skills + QEMU).
-# The detonation guest (vmlinuz + rootfs) is added in Plan 2.
-# Python 3.12 base (angr requires >=3.12) on Debian bookworm (verified apt set).
+# Base: python:3.12-slim-trixie (Debian 13 + CPython 3.12, validated for angr).
+# Java for Ghidra is Debian trixie's apt openjdk-21-jdk (full JDK, has javac for
+# Ghidra's .java GhidraScripts). Python tools install globally (this image's pip
+# is not PEP-668 externally-managed). A baked 'vibe' user is remapped to the host
+# uid at runtime by the entrypoint (setpriv), so reports in /work stay owned by you.
 # ----------------------------- builder -----------------------------
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.12-slim-trixie AS builder
 ARG OPENCODE_VERSION
 ARG GHIDRA_URL
 ARG GHIDRA_SHA256
-ARG TEMURIN_URL
-ARG TEMURIN_SHA256
+ARG RADARE2_DEB_URL
+ARG UPX_URL
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      curl ca-certificates unzip \
+      curl ca-certificates unzip xz-utils \
     && rm -rf /var/lib/apt/lists/*
-
-# uv (static binary from the official image)
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
-# python venv (angr, z3): same path as runtime + pinned to system python => portable copy
-COPY requirements/python-tools.txt /tmp/python-tools.txt
-RUN uv venv --python python3 /opt/vibe-reverse/venv \
- && uv pip install --python /opt/vibe-reverse/venv/bin/python -r /tmp/python-tools.txt
 
 # Ghidra (URL + sha pinned via build args; see build.sh)
 RUN curl -fsSL "$GHIDRA_URL" -o /tmp/ghidra.zip \
@@ -29,36 +23,21 @@ RUN curl -fsSL "$GHIDRA_URL" -o /tmp/ghidra.zip \
  && mv /opt/ghidra_* /opt/ghidra \
  && rm /tmp/ghidra.zip
 
-# Temurin JDK 21 (Ghidra 12.x requires JDK 21; not available via Debian apt).
-# URL + sha pinned via build args (see build.sh / Adoptium API).
-RUN curl -fsSL "$TEMURIN_URL" -o /tmp/jdk.tar.gz \
- && echo "${TEMURIN_SHA256}  /tmp/jdk.tar.gz" | sha256sum -c - \
- && mkdir -p /opt/jdk21 \
- && tar -C /opt/jdk21 --strip-components=1 -xzf /tmp/jdk.tar.gz \
- && rm /tmp/jdk.tar.gz
-
-# opencode (pinned standalone binary) + pre-install the OpenAI-compatible SDK.
-ENV HOME=/root \
-    PATH="/opt/vibe-reverse/bin:/root/.opencode/bin:${PATH}" \
-    OPENCODE_DISABLE_MODELS_FETCH=1 OPENCODE_DISABLE_AUTOUPDATE=1
-RUN curl -fsSL https://opencode.ai/install | VERSION="${OPENCODE_VERSION}" bash \
- && install -Dm755 /root/.opencode/bin/opencode /opt/vibe-reverse/bin/opencode
-# NOTE: opencode is NOT executed at build time. The @ai-sdk/openai-compatible
-# provider package is left for runtime/manual verification (the analyst tests it
-# on the isolated host); models.dev/autoupdate fetches are disabled via env.
-
-# radare2 (.deb) + upx (static binary) — not in Debian bookworm; use official releases
-ARG RADARE2_DEB_URL
-ARG UPX_URL
-RUN apt-get update && apt-get install -y --no-install-recommends xz-utils \
- && rm -rf /var/lib/apt/lists/* \
- && mkdir -p /opt/dl \
+# radare2 (.deb) + upx (static binary) — newer than Debian's; staged for runtime.
+RUN mkdir -p /opt/dl \
  && curl -fsSL "$RADARE2_DEB_URL" -o /opt/dl/radare2.deb \
  && curl -fsSL "$UPX_URL" -o /tmp/upx.tar.xz \
  && tar -C /tmp -xf /tmp/upx.tar.xz \
  && cp /tmp/upx-*-amd64_linux/upx /opt/dl/upx \
  && chmod +x /opt/dl/upx \
  && rm -rf /tmp/upx.tar.xz /tmp/upx-*
+
+# opencode (pinned standalone binary) installed into a HOME we copy to the vibe
+# user. NOT executed at build time (it opens a TUI and hangs).
+ENV OPENCODE_DISABLE_MODELS_FETCH=1 OPENCODE_DISABLE_AUTOUPDATE=1
+RUN mkdir -p /opt/opencode-home \
+ && HOME=/opt/opencode-home sh -c 'curl -fsSL https://opencode.ai/install | VERSION="'"${OPENCODE_VERSION}"'" bash' \
+ && test -x /opt/opencode-home/.opencode/bin/opencode
 
 # ---- Linux detonation guest (kernel + initrd + rootfs.ext4) ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -74,37 +53,43 @@ RUN set -eu; \
     sh /tmp/build-rootfs.sh "$KVER" /opt/vibe-reverse/guest/rootfs.ext4
 
 # ----------------------------- runtime -----------------------------
-FROM python:3.12-slim-bookworm AS runtime
-# radare2 (.deb) + upx (static) staged from the builder (not in Debian main).
-# Java is NOT installed via apt (bookworm only has JDK 17; Ghidra 12.x needs 21).
-# JDK 21 is staged from the builder as /opt/jdk21 (Temurin) below.
+FROM python:3.12-slim-trixie AS runtime
+# RE tools + Java (openjdk-21-jdk = full JDK with javac, for Ghidra's .java
+# GhidraScripts) + the entrypoint's identity tools (passwd: usermod/groupmod/
+# groupadd; util-linux: setpriv). radare2/upx are staged from the builder.
 COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
       file binutils binwalk gdb ltrace strace xxd \
       qemu-system-x86 qemu-utils xorriso dosfstools mtools \
-      ca-certificates \
+      ca-certificates openjdk-21-jdk passwd util-linux \
       /opt/dl/radare2.deb \
  && install -Dm755 /opt/dl/upx /usr/local/bin/upx \
+ && test -x /usr/lib/jvm/java-21-openjdk-amd64/bin/java \
  && rm -rf /var/lib/apt/lists/* /opt/dl
 
-# baked artifacts (venv at the SAME path it was built at)
-COPY --from=builder /opt/vibe-reverse/venv            /opt/vibe-reverse/venv
-COPY --from=builder /opt/jdk21                         /opt/jdk21
-COPY --from=builder /opt/ghidra                       /opt/ghidra
-COPY --from=builder /opt/vibe-reverse/bin/opencode    /opt/vibe-reverse/bin/opencode
-COPY --from=builder /opt/vibe-reverse/guest           /opt/vibe-reverse/guest
-COPY deploy/vmrun.sh                                  /opt/vibe-reverse/bin/vmrun.sh
-RUN chmod +x /opt/vibe-reverse/bin/vmrun.sh
+# python tools, installed GLOBALLY (no venv, no extra resolver). Verified at build.
+COPY requirements/python-tools.txt /tmp/python-tools.txt
+RUN pip install --no-cache-dir -r /tmp/python-tools.txt \
+ && python -c 'import angr, z3' \
+ && rm -f /tmp/python-tools.txt
+
+# the vibe user: a real identity (HOME + passwd entry). The entrypoint remaps its
+# uid/gid to the host user's at runtime, then drops to it via setpriv.
+RUN useradd --create-home --uid 1000 --user-group --shell /bin/sh vibe
+
+# opencode "for the vibe user": staged from the builder into vibe's HOME.
+COPY --from=builder --chown=vibe:vibe /opt/opencode-home/.opencode /home/vibe/.opencode
+
+# baked artifacts
+COPY --from=builder /opt/ghidra             /opt/ghidra
+COPY --from=builder /opt/vibe-reverse/guest /opt/vibe-reverse/guest
+COPY deploy/vmrun.sh                        /opt/vibe-reverse/bin/vmrun.sh
 
 # the 10 skills + scripts
 COPY skills/                /opt/vibe-reverse/skills/
-COPY deploy/ensure-user.sh  /opt/vibe-reverse/bin/ensure-user.sh
 COPY deploy/entrypoint.sh   /opt/vibe-reverse/bin/entrypoint.sh
 COPY deploy/smoke.sh        /opt/vibe-reverse/bin/smoke.sh
-# world-writable /etc/passwd so the entrypoint can add an entry for the mapped UID
-# (needed for Java/Ghidra user.home). Safe here: malware never runs in the container,
-# only in the no-network microVM.
-RUN chmod +x /opt/vibe-reverse/bin/*.sh && chmod 0666 /etc/passwd
+RUN chmod +x /opt/vibe-reverse/bin/*.sh
 
 # internal CA (placeholder-safe: register only if non-empty)
 COPY deploy/ca.pem /tmp/ca.pem
@@ -112,9 +97,9 @@ RUN if [ -s /tmp/ca.pem ]; then \
       cp /tmp/ca.pem /usr/local/share/ca-certificates/internal-ca.crt && update-ca-certificates ; \
     fi ; rm -f /tmp/ca.pem
 
-ENV RE_HARNESS_VENV=/opt/vibe-reverse/venv \
-    JAVA_HOME=/opt/jdk21 \
-    PATH="/opt/vibe-reverse/bin:/opt/ghidra/support:/opt/jdk21/bin:${PATH}" \
+ENV HOME=/home/vibe \
+    JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 \
+    PATH="/opt/vibe-reverse/bin:/home/vibe/.opencode/bin:/opt/ghidra/support:/usr/lib/jvm/java-21-openjdk-amd64/bin:${PATH}" \
     OPENCODE_DISABLE_MODELS_FETCH=1 OPENCODE_DISABLE_AUTOUPDATE=1 \
     NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt \
     SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
