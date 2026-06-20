@@ -24,7 +24,7 @@ global `python3` in the container):
 "${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}/bin/python" templates/z3_skel.py
 ```
 
-If they're missing, set up the venv via **`re-preflight`** / `requirements/setup.sh`.
+They are pre-installed on the air-gapped image — there is nothing to set up.
 
 ## Always verify
 

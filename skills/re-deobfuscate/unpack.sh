@@ -15,7 +15,7 @@ if strings -n 4 "$TARGET" 2>/dev/null | grep -q 'UPX!'; then
       echo "packer: UPX (modified header?) -> 'upx -d' failed; try scripted unpack (re-scripting)"
     fi
   else
-    echo "packer: UPX detected but 'upx' not installed -> install via re-preflight, then re-run"
+    echo "packer: UPX detected but 'upx' not on PATH (unexpected on the air-gapped image) -> check PATH"
   fi
   exit 0
 fi

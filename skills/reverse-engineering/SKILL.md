@@ -12,7 +12,7 @@ next phase → … → report.** One phase at a time; the human approves each pl
 
 1. **Record authorization/scope** — only analyze artifacts the user is authorized
    to (CTF / owned / authorized engagement).
-2. **Ensure tooling** — if RE tools are missing, use **re-preflight**.
+2. **Tooling** — every RE tool is pre-installed (air-gapped); never install anything.
 3. **Scaffold** — run `new_investigation.sh <slug>` to create
    `docs/reverse/<date>-<slug>/` and record the target in `00-target.md`.
 

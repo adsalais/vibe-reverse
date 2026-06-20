@@ -6,8 +6,7 @@ arithmetic/bitops, model the computation as constraints and let z3 find a
 satisfying input instead of reversing by hand. Replace the example constraints
 with the ones you read in re-static.
 
-Install: python3 -m pip install z3-solver   (see re-preflight)
-Run:     python3 z3_skel.py
+Run: python3 z3_skel.py   (z3 is pre-installed on the air-gapped image)
 """
 import z3
 

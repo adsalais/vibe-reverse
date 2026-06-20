@@ -31,5 +31,5 @@ fi
 
 echo "engine: $ENGINE"
 echo "output: $ARTOUT"
-[ "$ENGINE" = objdump ] && echo "note: objdump fallback (no decompiler). Install Ghidra via re-preflight for decompiled C."
+[ "$ENGINE" = objdump ] && echo "note: objdump fallback (Ghidra/r2 not found on PATH — unexpected on the air-gapped image)."
 exit 0

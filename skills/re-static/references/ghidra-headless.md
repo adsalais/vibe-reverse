@@ -8,7 +8,7 @@
 `DecompileExport.java` (a Ghidra Java script, co-located so `-scriptPath` finds
 it) walks the program's functions, runs the `DecompInterface`, and writes C to
 the path in env var `GHIDRA_OUT_C`. If Ghidra is absent the script falls back to
-radare2, then objdump. Install Ghidra via `re-preflight`.
+radare2, then objdump. (On the air-gapped image Ghidra is pre-installed.)
 
 ## Requirements (Ghidra 12.x)
 

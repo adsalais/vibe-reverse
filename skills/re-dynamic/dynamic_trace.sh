@@ -19,7 +19,7 @@ elif command -v gdb >/dev/null 2>&1; then
   ENGINE=gdb; TRACE="$ART/gdb.txt"
   gdb -batch -ex run -ex bt --args "$TARGET" "$@" > "$TRACE" 2>&1 || true
 else
-  echo "no tracer (strace/ltrace/gdb) — install via re-preflight" >&2; exit 1
+  echo "no tracer (strace/ltrace/gdb) on PATH — unexpected on the air-gapped image" >&2; exit 1
 fi
 
 echo "engine: $ENGINE"

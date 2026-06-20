@@ -5,8 +5,7 @@ WHY: let angr explore paths and solve for the stdin/argv that reaches the
 "success" branch, instead of tracing by hand. Set FIND/AVOID to addresses you
 read in re-static (e.g. the puts("Correct!") block vs the puts("Wrong.") block).
 
-Install: python3 -m pip install angr   (see re-preflight)
-Run:     python3 angr_skel.py <binary>
+Run: python3 angr_skel.py <binary>   (angr is pre-installed on the air-gapped image)
 """
 import sys
 import angr

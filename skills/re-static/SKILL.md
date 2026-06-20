@@ -15,8 +15,8 @@ sh ghidra_decompile.sh <target> <investigation-dir>
 
 Tries **Ghidra → radare2 → objdump** and writes the result to `artifacts/`. Read
 the artifact and **summarize** the relevant function(s) into the plan — don't
-paste the whole disassembly into chat. If it fell back to objdump, decompiled C
-needs Ghidra (install via `re-preflight`).
+paste the whole disassembly into chat. If it fell back to objdump, the decompilers
+(Ghidra/r2) were not found on PATH — unexpected on the air-gapped image.
 
 ## Assess (cite `references/protections.md`)
 

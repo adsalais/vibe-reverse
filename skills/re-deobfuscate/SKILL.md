@@ -13,7 +13,7 @@ Make the code readable before deeper analysis.
 sh unpack.sh <target> <investigation-dir>
 ```
 
-Detects/unpacks UPX. If `upx` is missing, install via **`re-preflight`**, then re-run.
+Detects/unpacks UPX (pre-installed on the air-gapped image).
 
 ## Nested layers
 
