@@ -23,4 +23,20 @@ grep -q 'setpriv\|util-linux' "$D" || fail "Dockerfile does not ensure setpriv/u
 # build.sh no longer passes Temurin build args
 ! grep -qi 'temurin' deploy/build.sh || fail "build.sh still references Temurin"
 
+# entrypoint: starts root, remaps vibe, drops via setpriv; ensure-user.sh is gone
+E=deploy/entrypoint.sh
+sh -n "$E" || fail "entrypoint.sh syntax error"
+grep -q 'setpriv'  "$E" || fail "entrypoint.sh does not drop privileges via setpriv"
+grep -q 'usermod'  "$E" || fail "entrypoint.sh does not remap the vibe uid"
+grep -q 'HOST_UID' "$E" || fail "entrypoint.sh does not read HOST_UID"
+[ ! -e deploy/ensure-user.sh ] || fail "deploy/ensure-user.sh should be deleted"
+! grep -rq 'ensure-user' deploy/entrypoint.sh deploy/smoke.sh || fail "ensure-user still referenced"
+
+# smoke: global python import (no venv path), checks vibe user + setpriv
+S=deploy/smoke.sh
+sh -n "$S" || fail "smoke.sh syntax error"
+grep -q 'python3 -c' "$S"     || fail "smoke.sh not using global python3"
+grep -q 'import z3, angr' "$S" || fail "smoke.sh missing angr/z3 import"
+! grep -q '/opt/vibe-reverse/venv' "$S" || fail "smoke.sh still references the venv path"
+
 echo "PASS: test_deploy_image.sh"
