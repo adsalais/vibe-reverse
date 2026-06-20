@@ -69,7 +69,7 @@ FROM python:3.12-slim-bookworm AS runtime
 COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
       file binutils binwalk gdb ltrace strace xxd \
-      qemu-system-x86 qemu-utils \
+      qemu-system-x86 qemu-utils xorriso dosfstools mtools \
       openjdk-17-jre-headless ca-certificates \
       /opt/dl/radare2.deb \
  && install -Dm755 /opt/dl/upx /usr/local/bin/upx \

@@ -49,4 +49,7 @@ done
 [ -x /opt/vibe-reverse/bin/vmrun.sh ] || fail "vmrun.sh missing"
 ok "microVM guest + vmrun.sh"
 
+for t in xorriso mkfs.vfat mcopy; do command -v "$t" >/dev/null 2>&1 || fail "windows-path tool missing: $t"; done
+ok "windows-path tools (iso/fat/mtools)"
+
 echo "PASS: smoke.sh"
