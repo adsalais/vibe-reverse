@@ -8,6 +8,8 @@ FROM python:3.12-slim-bookworm AS builder
 ARG OPENCODE_VERSION
 ARG GHIDRA_URL
 ARG GHIDRA_SHA256
+ARG TEMURIN_URL
+ARG TEMURIN_SHA256
 RUN apt-get update && apt-get install -y --no-install-recommends \
       curl ca-certificates unzip \
     && rm -rf /var/lib/apt/lists/*
@@ -26,6 +28,14 @@ RUN curl -fsSL "$GHIDRA_URL" -o /tmp/ghidra.zip \
  && unzip -q /tmp/ghidra.zip -d /opt \
  && mv /opt/ghidra_* /opt/ghidra \
  && rm /tmp/ghidra.zip
+
+# Temurin JDK 21 (Ghidra 12.x requires JDK 21; not available via Debian apt).
+# URL + sha pinned via build args (see build.sh / Adoptium API).
+RUN curl -fsSL "$TEMURIN_URL" -o /tmp/jdk.tar.gz \
+ && echo "${TEMURIN_SHA256}  /tmp/jdk.tar.gz" | sha256sum -c - \
+ && mkdir -p /opt/jdk21 \
+ && tar -C /opt/jdk21 --strip-components=1 -xzf /tmp/jdk.tar.gz \
+ && rm /tmp/jdk.tar.gz
 
 # opencode (pinned standalone binary) + pre-install the OpenAI-compatible SDK.
 ENV HOME=/root \
@@ -65,18 +75,21 @@ RUN set -eu; \
 
 # ----------------------------- runtime -----------------------------
 FROM python:3.12-slim-bookworm AS runtime
-# radare2 (.deb) + upx (static) staged from the builder (not in Debian main)
+# radare2 (.deb) + upx (static) staged from the builder (not in Debian main).
+# Java is NOT installed via apt (bookworm only has JDK 17; Ghidra 12.x needs 21).
+# JDK 21 is staged from the builder as /opt/jdk21 (Temurin) below.
 COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
       file binutils binwalk gdb ltrace strace xxd \
       qemu-system-x86 qemu-utils xorriso dosfstools mtools \
-      openjdk-17-jre-headless ca-certificates \
+      ca-certificates \
       /opt/dl/radare2.deb \
  && install -Dm755 /opt/dl/upx /usr/local/bin/upx \
  && rm -rf /var/lib/apt/lists/* /opt/dl
 
 # baked artifacts (venv at the SAME path it was built at)
 COPY --from=builder /opt/vibe-reverse/venv            /opt/vibe-reverse/venv
+COPY --from=builder /opt/jdk21                         /opt/jdk21
 COPY --from=builder /opt/ghidra                       /opt/ghidra
 COPY --from=builder /opt/vibe-reverse/bin/opencode    /opt/vibe-reverse/bin/opencode
 COPY --from=builder /opt/vibe-reverse/guest           /opt/vibe-reverse/guest
@@ -84,10 +97,14 @@ COPY deploy/vmrun.sh                                  /opt/vibe-reverse/bin/vmru
 RUN chmod +x /opt/vibe-reverse/bin/vmrun.sh
 
 # the 10 skills + scripts
-COPY skills/              /opt/vibe-reverse/skills/
-COPY deploy/entrypoint.sh /opt/vibe-reverse/bin/entrypoint.sh
-COPY deploy/smoke.sh      /opt/vibe-reverse/bin/smoke.sh
-RUN chmod +x /opt/vibe-reverse/bin/*.sh
+COPY skills/                /opt/vibe-reverse/skills/
+COPY deploy/ensure-user.sh  /opt/vibe-reverse/bin/ensure-user.sh
+COPY deploy/entrypoint.sh   /opt/vibe-reverse/bin/entrypoint.sh
+COPY deploy/smoke.sh        /opt/vibe-reverse/bin/smoke.sh
+# world-writable /etc/passwd so the entrypoint can add an entry for the mapped UID
+# (needed for Java/Ghidra user.home). Safe here: malware never runs in the container,
+# only in the no-network microVM.
+RUN chmod +x /opt/vibe-reverse/bin/*.sh && chmod 0666 /etc/passwd
 
 # internal CA (placeholder-safe: register only if non-empty)
 COPY deploy/ca.pem /tmp/ca.pem
@@ -96,7 +113,8 @@ RUN if [ -s /tmp/ca.pem ]; then \
     fi ; rm -f /tmp/ca.pem
 
 ENV RE_HARNESS_VENV=/opt/vibe-reverse/venv \
-    PATH="/opt/vibe-reverse/bin:/opt/ghidra/support:${PATH}" \
+    JAVA_HOME=/opt/jdk21 \
+    PATH="/opt/vibe-reverse/bin:/opt/ghidra/support:/opt/jdk21/bin:${PATH}" \
     OPENCODE_DISABLE_MODELS_FETCH=1 OPENCODE_DISABLE_AUTOUPDATE=1 \
     NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt \
     SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \

@@ -11,9 +11,9 @@ OUT="${2:-.}"; ART="$OUT/artifacts"; mkdir -p "$ART"
 if command -v analyzeHeadless >/dev/null 2>&1; then
   PROJ="$(mktemp -d)"
   OUT_C="$ART/ghidra.c"
-  # decompile_export.py (Ghidra script) writes decompiled C to $GHIDRA_OUT_C (see references/).
+  # DecompileExport.java (co-located; found via -scriptPath) writes decompiled C to $GHIDRA_OUT_C.
   GHIDRA_OUT_C="$OUT_C" analyzeHeadless "$PROJ" tmp -import "$TARGET" \
-    -scriptPath "$(dirname "$0")" -postScript decompile_export.py >/dev/null 2>&1 || true
+    -scriptPath "$(dirname "$0")" -postScript DecompileExport.java >/dev/null 2>&1 || true
   rm -rf "$PROJ"
   if [ -s "$OUT_C" ]; then ENGINE=ghidra; ARTOUT="$OUT_C"
   else ENGINE=ghidra-failed; ARTOUT="$OUT_C"; fi

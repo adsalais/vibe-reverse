@@ -2,6 +2,11 @@
 # entrypoint.sh — runs as the host uid (via docker --user). Seeds opencode auth
 # into the writable data dir, then launches opencode in the working dir.
 set -eu
+
+# Give the mapped uid a real identity (HOME + /etc/passwd entry) so Ghidra (JVM
+# user.home) and angr (python getpass) work. Sets and exports HOME.
+. /opt/vibe-reverse/bin/ensure-user.sh
+
 : "${XDG_DATA_HOME:=$HOME}"
 : "${XDG_CACHE_HOME:=$HOME/.cache}"
 mkdir -p "$XDG_DATA_HOME/opencode" "$XDG_CACHE_HOME/opencode"

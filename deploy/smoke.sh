@@ -5,6 +5,11 @@ set -eu
 fail() { echo "FAIL: $1" >&2; exit 1; }
 ok()   { echo "ok: $1"; }
 
+# smoke runs via `--entrypoint sh`, bypassing entrypoint.sh — so replicate the
+# identity setup the real launcher gets, or uid-sensitive checks (angr import,
+# Ghidra) would fail here while working in production.
+. /opt/vibe-reverse/bin/ensure-user.sh
+
 # offline opencode env hardening present
 [ "${OPENCODE_DISABLE_MODELS_FETCH:-}" = "1" ] || fail "OPENCODE_DISABLE_MODELS_FETCH not set"
 [ "${OPENCODE_DISABLE_AUTOUPDATE:-}" = "1" ]  || fail "OPENCODE_DISABLE_AUTOUPDATE not set"
