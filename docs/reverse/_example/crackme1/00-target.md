@@ -3,7 +3,7 @@
 - **File:** tests/fixtures/crackme1
 - **sha256:** 4d14084284560339cf6a05b90aa048467fc1fd1c381e1b51033edb408c0ef9eb
 - **Size:** 16136 bytes
-- **Source:** in-house CTF-style fixture (built from tests/fixtures/crackme1.c)
+- **Source / parent:** in-house CTF-style fixture (built from tests/fixtures/crackme1.c)
 - **Goal:** find a `<key>` the binary accepts for a given `<user>`.
 
 ## Authorization / scope
@@ -11,4 +11,4 @@
 - Notes: safe, self-contained; no network or external interaction.
 
 ## Dynamic analysis
-- Sandbox used: not required (static analysis + a direct solve sufficed).
+- Sandbox used (filled in only if the target is ever run): not required (static + a direct solve sufficed).

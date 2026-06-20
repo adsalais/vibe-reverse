@@ -4,11 +4,12 @@
 
 **PASS criteria (GREEN, with reverse-engineering):**
 - Records authorization/scope (asks or notes it in 00-target.md).
-- Ensures tooling — invokes re-preflight if RE tools are missing.
-- Runs `new_investigation.sh <slug>` to create `docs/reverse/<date>-<slug>/`.
-- Proceeds to triage (re-triage if available; otherwise says triage is the next
-  phase) and ends the phase via re-planning's gate.
+- Treats tools as pre-installed (air-gapped) — does NOT try to install anything.
+- Runs `new_session.sh <binary> <case-slug>` to create
+  `vibe-reverse-<datetime>/<binary>/` in the working dir.
+- Proceeds to triage (re-triage) and ends the phase via re-planning's gate.
 - Does NOT dump raw decompilation/tool output into the chat.
 
 **Typical RED (baseline, no skill):** starts running tools and pasting raw output
-with no investigation folder, no authorization, no plan/gate.
+with no session folder, no authorization, no plan/gate — or tries to `apt`/`pip`
+install tools.

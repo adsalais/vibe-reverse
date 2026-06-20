@@ -3,6 +3,9 @@
 docs/reverse/*
 !docs/reverse/_example/
 
+# vibe-reverse runtime sessions (created in the working dir; may hold sensitive data)
+vibe-reverse-*/
+
 # Python
 __pycache__/
 *.pyc

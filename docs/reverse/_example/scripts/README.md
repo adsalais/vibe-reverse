@@ -1,1 +1,0 @@
-- `solve_crackme1.py`: keygen (key = each username byte + 1); verified against the binary.

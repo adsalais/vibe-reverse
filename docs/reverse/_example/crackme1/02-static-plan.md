@@ -16,7 +16,12 @@
 - None material.
 
 ## Proposed next steps
-1. re-solve: implement keygen (`key[i] = user[i] + 1`), verify against the binary.
+1. re-solve: implement keygen (`key[i] = user[i] + 1`), verify against the binary — **cost: ⚡**
 
 ## Decision needed from you
-- [x] Approve as-is
+1. Approve as-is
+2. Approve with changes
+3. Redirect
+Which option?
+
+> Approved (1).

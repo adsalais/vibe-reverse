@@ -32,4 +32,6 @@ venv), so `python` is the image Python with angr/z3 available.
   works from any investigation directory.
 - Add tools by editing `python-tools.txt`, then re-run `setup.sh` (or rebuild).
 
-`re-preflight` detects what's installed and points here for anything missing.
+The skills assume every tool is already present (air-gapped) and call `python3`
+directly. In the **container** that resolves to the global install; on a **host**,
+activate the venv (or put `$RE_HARNESS_VENV/bin` on PATH) before running the skills.

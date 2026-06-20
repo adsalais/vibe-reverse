@@ -9,15 +9,19 @@ Works in **Claude Code** and **opencode** (same install). Heavy tool output goes
 to files; you review a short, self-checked plan at each step.
 
 - **How it works:** `ARCHITECTURE.md` (full workflow)
-- **Design spec:** `docs/superpowers/specs/2026-06-20-reverse-engineering-harness-design.md`
+- **Design specs:** `docs/superpowers/specs/2026-06-20-reverse-engineering-harness-design.md` (v1),
+  `docs/superpowers/specs/2026-06-20-harness-v2-airgap-advanced-re-design.md` (v2)
 - **Install:** see `INSTALL.md`
-- **Status:** v1 complete — full native/CTF vertical (10 skills). Firmware / managed / wasm packs are the roadmap.
+- **Status:** v2 in progress — air-gapped harness + advanced capabilities
+  (stacked-obfuscation router, devirtualization, anti-analysis, crypto, config/IOC,
+  checkpoint/resume). Whitebox crypto is the next spec.
 
 ## Quickstart
 1. Install the skills (`INSTALL.md`).
 2. In your agent: *"Reverse-engineer ./challenge"* — the `reverse-engineering`
-   skill takes over: checks tooling, creates `docs/reverse/<date>-<slug>/`, and
-   walks you through triage with reviewed plans.
+   skill takes over: records authorization, creates a `vibe-reverse-<datetime>/`
+   session folder in your working dir, and walks you through triage with reviewed
+   plans. Resume a paused case with *"continue the investigation"*.
 
 ## Safety
 Targets are analyzed statically by default and only **run inside a sandbox**

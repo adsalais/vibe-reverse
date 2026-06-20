@@ -15,7 +15,12 @@
 - None.
 
 ## Proposed next steps
-1. re-report: write REPORT.md.
+1. re-report: write REPORT.md — **cost: ⚡**
 
 ## Decision needed from you
-- [x] Approve as-is
+1. Approve as-is
+2. Approve with changes
+3. Redirect
+Which option?
+
+> Approved (1).

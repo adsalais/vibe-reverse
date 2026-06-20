@@ -67,8 +67,8 @@ You say: **"Reverse-engineer `./challenge`."**
 
 | # | What happens | Skill | Files touched |
 |---|---|---|---|
-| 1 | Records **authorization/scope**, ensures tooling, scaffolds the folder | `reverse-engineering` + `new_investigation.sh` | `docs/reverse/2026-06-20-challenge/{00-target.md, findings.md, artifacts/, scripts/}` |
-| 2 | If tools are missing, detects them and writes install artifacts | `re-preflight` → `preflight.sh` | `install.sh`, `Dockerfile.snippet` |
+| 1 | Records **authorization/scope**, scaffolds the session in the CWD | `reverse-engineering` + `new_session.sh` | `vibe-reverse-<datetime>/<challenge>/{00-target.md, findings.md, STATE.md, artifacts/, scripts/}` + `index.md` |
+| 2 | (later) registers an unpacked payload as a peer binary | `add_binary.sh` | a new `<payload>/` subfolder + an `index.md` link |
 | 3 | **Triage:** file type, arch, packing, protections, strings; decide the target family | `re-triage` ⏳ | `01-triage-plan.md` |
 | — | self-review → 🛑 **you approve / redirect** | `re-planning` | — |
 | 4 | **Static analysis:** decompile (Ghidra headless / r2), assess *obfuscated? nested? solver needed?* | `re-static` ⏳ | `artifacts/ghidra/decompiled.c`, `02-static-plan.md` |
@@ -91,21 +91,25 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 
 | Skill | Role | Status |
 |---|---|---|
-| `reverse-engineering` | Entry point: authorization, scaffolding, routing | ✅ built |
-| `re-preflight` | Detect tools; write `install.sh` + `Dockerfile.snippet` (never installs) | ✅ built |
-| `re-planning` | The plan artifact + self-review + STOP-for-approval gate | ✅ built |
+| `reverse-engineering` | Entry point: authorization, scaffolding, routing (air-gapped) | ✅ built |
+| `re-planning` | The plan artifact + self-review + STOP-for-approval gate + STATE.md checkpoint | ✅ built |
 | `re-scripting` | On-the-fly Python with TDD + learner-oriented docs | ✅ built |
+| `re-continue` | Resume a paused session from `STATE.md` (read-only; stops at the gate) | ✅ built |
 
 **Phases** — the native/CTF binary vertical:
 
 | Skill | Role | Status |
 |---|---|---|
 | `re-triage` | Identify the artifact; record scope; route by target family | ✅ built |
-| `re-static` | Decompile & statically analyze; judge obfuscation / solver need | ✅ built |
-| `re-deobfuscate` | Packers, nested layers, string / control-flow deobfuscation | ✅ built |
+| `re-static` | Decompile & statically analyze; capa/FLOSS scan; route | ✅ built (scan: Plan 3) |
+| `re-deobfuscate` | Stacked-layer **router**: inventory → order → peel → re-triage | ✅ built (router: Plan 3) |
+| `re-devirtualize` | VM-based obfuscation (incl. nested/recursive VMs) | ⏳ Plan 4 |
+| `re-antianalysis` | Detect & neutralize anti-debug/anti-VM/anti-disasm | ⏳ Plan 4 |
+| `re-crypto` | Identify & replicate crypto (decrypt strings/config/C2) | ⏳ Plan 3 |
+| `re-config` | Config & IOC extraction → IOC list + YARA rule | ⏳ Plan 3 |
 | `re-solve` | Symbolic execution / SMT (angr, z3): keygen, paths, constraints | ✅ built |
-| `re-dynamic` | Run/trace under gdb/ltrace/strace — **sandbox only** | ✅ built |
-| `re-report` | Synthesize `REPORT.md` — **written even on complete failure** | ✅ built |
+| `re-dynamic` | Run/trace/**emulate** — **sandbox only** | ✅ built (emulation: Plan 3) |
+| `re-report` | Synthesize expert `REPORT.md` — **written even on complete failure** | ✅ built |
 
 Each skill is a `SKILL.md` (markdown instructions) plus optional helper scripts
 and `references/` files loaded only when needed.
@@ -114,26 +118,31 @@ and `references/` files loaded only when needed.
 
 ## 5. The investigation folder
 
-One investigation = one dated folder under `docs/reverse/` (git-ignored — it may
-hold sensitive target data):
+One session = one `vibe-reverse-<datetime>/` folder created **in the working
+directory** (git-ignored — it may hold sensitive target data). A session holds
+**one or more binaries** (a dropper plus the payloads it yields), each in its own
+subfolder:
 
 ```
-docs/reverse/2026-06-20-challenge/
-├── 00-target.md       # what it is + AUTHORIZATION/scope + hashes + goal
-├── 01-triage-plan.md  # ← a gate artifact (one per phase, numbered)
-├── 02-static-plan.md
-├── findings.md        # running, cumulative "what we know"
-├── REPORT.md          # final synthesis (written even on failure)
-├── install.sh         # from re-preflight
-├── Dockerfile.snippet # from re-preflight
-├── artifacts/         # ALL heavy/verbose tool output (never pasted into chat)
-└── scripts/           # on-the-fly Python (code + tests + README)
+vibe-reverse-2026-06-20_14-30-05/
+├── index.md               # session map: binaries, relationships, case exec-summary
+├── <challenge>/
+│   ├── 00-target.md       # what it is + AUTHORIZATION/scope + hashes + goal
+│   ├── findings.md        # running, cumulative "what we know"
+│   ├── STATE.md           # live cursor: phase/status/next-step + background-jobs ledger
+│   ├── 01-triage-plan.md  # ← a gate artifact (one per phase, numbered)
+│   ├── 02-static-plan.md
+│   ├── REPORT.md          # final synthesis (written even on failure)
+│   ├── artifacts/         # ALL heavy/verbose tool output (never pasted into chat)
+│   └── scripts/           # on-the-fly Python (code + tests + README)
+└── <payload>/ …           # a peer binary added mid-investigation (add_binary.sh)
 ```
 
 **Data-flow rule:** tools write verbose output to `artifacts/`; the phase reads
 the file and writes a **summary** into the plan and `findings.md`. Numbered plans
-are point-in-time hand-offs; `findings.md` is the cumulative record; `REPORT.md`
-is the terminal synthesis.
+are point-in-time hand-offs; `findings.md` is the cumulative record; `STATE.md` is
+the resumable live cursor; `REPORT.md` is the terminal synthesis (one per binary;
+the session `index.md` carries a case-level executive summary).
 
 ---
 
@@ -176,25 +185,27 @@ gate is violating its spirit.*
 
 ---
 
-## 7. Tooling & preflight
+## 7. Tooling (air-gapped — everything is pre-installed)
 
-The harness assumes nothing is installed. `re-preflight` runs `preflight.sh`,
-which probes each known tool and prints a `TOOL / FOUND / PURPOSE` table, then
-writes two artifacts into the investigation folder — and **never installs
-anything itself**:
+The harness runs on an **air-gapped network**: every RE tool is baked into the
+image and **the agent never installs anything** (no `apt`, no `pip install`, no
+`curl`-to-fetch). A "missing" tool is a path/usage problem, not an install problem.
+`skills/reverse-engineering/references/tool-cheatsheet.md` maps tool → purpose.
 
-- **`install.sh`** — OS-aware, commented commands for the *missing* tools; you
-  review and run it.
-- **`Dockerfile.snippet`** — `RUN` lines to paste into a Dockerfile.
+Resilience is **fallback between baked tools** (e.g. Ghidra → radare2 → objdump),
+noted in the plan — that is degradation handling, not installation.
 
-Ghidra is handled as a commented manual recipe (it needs a JDK + download, not a
-package). If a tool is absent, phase skills **degrade gracefully** (e.g. no Ghidra
-→ radare2 → objdump) and note the degradation in the plan.
+Slow tools (Ghidra, angr, emulation, devirtualization, capa, FLOSS) follow
+`references/long-running-ops.md`: run **detached**, write to `artifacts/`, carry a
+generous soft budget (30–60 min), and on a budget-hit **ask the user** (numbered
+options) — never auto-kill.
 
-For a one-shot install of **everything**, see `requirements/` — `setup.sh` (host)
-or `Dockerfile` (container). Python tools (angr, z3) install into a **venv** at
-`$RE_HARNESS_VENV` on a host, or **globally** in the container; the harness
-invokes `"$RE_HARNESS_VENV/bin/python"`, falling back to `python3` when unset.
+The baked toolset (see `deploy/Dockerfile` + `requirements/python-tools.txt`):
+Ghidra/radare2/objdump/binutils, `upx`, Detect-It-Easy, `capa`, FLOSS, `yara`,
+`gdb`/`ltrace`/`strace`, `qemu` (microVM), and the Python stack — `angr`/`z3`,
+`capstone`/`keystone`/`unicorn`, `miasm`/Triton, `qiling`, `lief`/`pefile`/
+`pyelftools`, `pwntools`, `speakeasy`. Python tools install **globally**; scripts
+call `python3` directly. For a dev host, `requirements/setup.sh` provides them.
 
 ---
 
@@ -261,8 +272,9 @@ reverse_skills/
 
 Two kinds of test:
 
-- **Deterministic script tests** — `preflight.sh`, `new_investigation.sh`, and
-  `script_template.py` have real tests (`tests/scripts/`) run on every change.
+- **Deterministic script tests** — `new_session.sh`/`add_binary.sh`,
+  `session_status.sh`, the per-phase helper scripts, and `script_template.py` have
+  real tests (`tests/scripts/`) run on every change.
 - **Skill scenario tests** — each `SKILL.md` is built with the `writing-skills`
   RED→GREEN method: a fresh subagent attempts a scenario *without* the skill
   (baseline failure), then *with* it (must comply). Scenarios live in
@@ -271,10 +283,16 @@ Two kinds of test:
 **Build sequence (v1):** the harness is built incrementally so each step is
 usable on its own.
 
-1. **Plan 1 — spine & packaging** ✅ (orchestrator, preflight, planning+gate, scripting)
+1. **Plan 1 — spine & packaging** ✅ (orchestrator, planning+gate, scripting)
 2. **Plan 2 — triage + static** ✅ (re-triage, re-static)
 3. **Plan 3 — deobfuscate + solve + dynamic** ✅ (re-deobfuscate, re-solve, re-dynamic)
 4. **Plan 4 — reporting + example investigation** ✅ (re-report) — **v1 complete**
+
+**v2 (air-gap + advanced capabilities)** — see
+`docs/superpowers/specs/2026-06-20-harness-v2-airgap-advanced-re-design.md` and the
+four `…-harness-v2-plan*.md` plans: spine refactor (air-gap, remove preflight, new
+session layout, checkpoint/resume) → tooling/Docker → deob-router + crypto + config
+→ devirtualization + anti-analysis. Family **10 → 14** skills.
 
 ---
 
@@ -297,7 +315,7 @@ Code (see `INSTALL.md`). Portability rules the skills follow (see
 `re-triage` is designed to recognize *every* format family from day one. When a
 target isn't native, it says *"this is a firmware / managed / wasm target — that
 pack isn't built yet"* instead of failing. Each future pack is self-contained and
-reuses the same spine (orchestrator + planning gate + scripting + preflight +
+reuses the same spine (orchestrator + planning gate + scripting +
 report):
 
 | Pack | Tools | Triggered when triage detects |

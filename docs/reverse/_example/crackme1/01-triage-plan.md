@@ -16,7 +16,12 @@
 - Exact key derivation not yet known (need static analysis of `main`).
 
 ## Proposed next steps
-1. re-static: disassemble `main` to recover the key derivation.
+1. re-static: disassemble `main` to recover the key derivation — **cost: ⚡**
 
 ## Decision needed from you
-- [x] Approve as-is
+1. Approve as-is
+2. Approve with changes
+3. Redirect
+Which option?
+
+> Approved (1).

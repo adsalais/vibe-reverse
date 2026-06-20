@@ -33,18 +33,19 @@ tool-neutral `.agents/skills/`.
 ## Verify
 
 Ask your agent: *"list your reverse-engineering skills"* — you should see
-`reverse-engineering`, `re-preflight`, `re-planning`, `re-scripting`.
+`reverse-engineering`, `re-planning`, `re-scripting`, `re-continue`, and the
+`re-*` phase skills.
 
 > Note: opencode's bundled helper-file support (scripts/ inside a skill) is
 > confirmed in source but undocumented — pin a known opencode version if relied on.
 
-## External tools (radare2, Ghidra, angr, z3, …)
+## External tools (radare2, Ghidra, angr, z3, capa, FLOSS, …)
 
-The skills are instructions; the RE tools install separately. See **`requirements/`**:
+The skills are instructions; the RE tools install separately. The skills **assume
+the tools are already present** (the air-gapped `vibe-reverse` image bakes them and
+the agent never installs anything). To provide them yourself, see **`requirements/`**:
 
-- `sh requirements/setup.sh` — install on your host. Python tools (angr, z3) go
-  into a **venv** at `$RE_HARNESS_VENV` (default `~/.local/share/re-harness/venv`).
+- `sh requirements/setup.sh` — install on your host (system tools + a Python venv).
 - or `requirements/Dockerfile` — a container with everything preinstalled.
-
-`re-preflight` detects what's missing at runtime and writes per-investigation
-`install.sh` / `Dockerfile.snippet`.
+- the air-gapped appliance is `deploy/` (`sh deploy/build.sh`), which bakes every
+  tool the skills call.

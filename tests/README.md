@@ -3,9 +3,8 @@
 ## Script tests (deterministic, run locally)
 
 ```sh
-sh tests/scripts/test_preflight.sh
-sh tests/scripts/test_new_investigation.sh
-python3 -m pytest tests/scripts/test_script_template.py -q
+for t in tests/scripts/test_*.sh; do sh "$t"; done
+python3 -m pytest tests/scripts/ -q
 ```
 
 All must exit 0.

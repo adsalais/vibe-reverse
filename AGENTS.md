@@ -8,10 +8,13 @@ maintaining the harness). For how the harness *runs* an investigation, read
 
 Two things that ship together:
 
-1. **A portable reverse-engineering skill family** (`skills/`) — 10 skills that
+1. **A portable reverse-engineering skill family** (`skills/`) — 14 skills that
    pilot an RE investigation as a reviewed loop (`analyze → plan → human approves
    → execute → report`). Works identically in Claude Code and opencode (both read
-   `~/.claude/skills/`).
+   `~/.claude/skills/`). (v2 target: spine `reverse-engineering` / `re-planning` /
+   `re-scripting` / `re-continue`; phases `re-triage` / `re-static` /
+   `re-deobfuscate` / `re-devirtualize` / `re-antianalysis` / `re-crypto` /
+   `re-config` / `re-solve` / `re-dynamic` / `re-report`. `re-preflight` was removed.)
 2. **`vibe-reverse`** (`deploy/`) — an air-gapped Docker deployment of those
    skills + RE tools + opencode for blue-team malware analysis. Malware detonates
    only inside a no-network microVM.
@@ -24,7 +27,7 @@ design), `INSTALL.md` (install), `deploy/README.md` (deployment), and
 
 | Path | What |
 |------|------|
-| `skills/<name>/SKILL.md` | the 10 skills — orchestrator `reverse-engineering` + `re-*` phases |
+| `skills/<name>/SKILL.md` | the 14 skills — orchestrator `reverse-engineering` (+ `new_session.sh`/`add_binary.sh`/`session_status.sh`) + `re-*` phases |
 | `skills/<name>/*.sh`, `.../references/` | per-skill helper scripts + reference docs |
 | `deploy/` | Dockerfile, `build`/`export`/`install` scripts, `vibe-reverse` launcher, microVM guest |
 | `tests/scripts/` | deterministic sh + pytest tests (`tests/fixtures/` crackme1, `tests/scenarios/`) |
@@ -70,6 +73,12 @@ them needs **no image rebuild**. Only `skills/`, `deploy/entrypoint.sh`,
   starts with **"Use when …"** and lists trigger keywords.
 - No mention of "claude" or "anthropic" — keep skills tool-neutral and portable
   (they must work in both Claude Code and opencode).
+- **Air-gapped:** skills assume every tool is pre-installed; they never install
+  anything. A missing tool is a path/usage problem.
+- **Numbered choices:** when a skill asks the user to decide, present a numbered
+  list ending "Which option?". Slow steps follow
+  `skills/reverse-engineering/references/long-running-ops.md` (background + budget +
+  ask-before-kill).
 
 **Helper scripts** (`skills/*/*.sh`, `deploy/*.sh`):
 - POSIX `sh` with `set -eu`. **Never execute the target** in a static/triage path.
@@ -78,13 +87,16 @@ them needs **no image rebuild**. Only `skills/`, `deploy/entrypoint.sh`,
 - Degrade gracefully when a tool is missing (e.g. Ghidra → radare2 → objdump).
 
 **The investigation loop** (ARCHITECTURE.md §2/§6):
-- Each phase writes a reviewed plan to `docs/reverse/<date>-<slug>/`.
+- Each session lives in the working dir as `vibe-reverse-<datetime>/<binary>/`
+  (multiple binaries per session; a `STATE.md` cursor per binary; a session `index.md`).
+  Each phase writes a reviewed plan there.
 - `re-planning` self-reviews (consistency / relevancy / evidence / scope), then
   escalates to an independent reviewer subagent. **The human approves each plan.**
 - `re-report` is mandatory — write the report **even on a complete failure**.
 
 **On-the-fly Python** (`re-scripting`): test-first, with inline `# why` comments
-aimed at a learner; runs in the harness Python at `$RE_HARNESS_VENV` (or global `python3`).
+aimed at a learner; runs in the global `python3` (the air-gapped image installs all
+Python tools globally — no venv).
 
 **Workflow & git**: follow the `superpowers` flow (brainstorm → write plan →
 execute → finish). TDD, small frequent commits, DRY / YAGNI. End every commit
@@ -101,9 +113,9 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 - `radare2` + `upx` are **not** in Debian → installed from pinned GitHub
   releases. Pin **`angr==9.2.221`** (z3 arrives via angr).
 - Python tools install **globally** (`pip install`, no venv/uv — the python
-  image's pip is not PEP-668 managed). `RE_HARNESS_VENV` is left **unset**, so the
-  skills' `${RE_HARNESS_VENV:-…}/bin/python` fallback resolves to global `python3`.
-  The build runs `python -c 'import angr, z3'` so a broken install fails the build.
+  image's pip is not PEP-668 managed). The skills call `python3` directly (the v2
+  refactor dropped the old `RE_HARNESS_VENV` fallback). The build runs
+  `python -c 'import angr, z3'` so a broken install fails the build.
 - **Never run `opencode` at build time** (it opens a TUI and hangs). The env vars
   `OPENCODE_DISABLE_MODELS_FETCH=1` + `OPENCODE_DISABLE_AUTOUPDATE=1` stop phone-home.
 - **Ghidra 12.x** needs **JDK 21** — now Debian trixie's apt `openjdk-21-jdk` (a
