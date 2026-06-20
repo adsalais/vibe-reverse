@@ -17,3 +17,4 @@ tests/fixtures/crackme1
 # air-gap deployment: never commit the internal CA or built artifacts
 deploy/ca.pem
 dist/
+todo.txt
