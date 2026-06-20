@@ -26,6 +26,19 @@ ok "ghidra analyzeHeadless + JDK 21"
 python3 -c 'import z3, angr' 2>/dev/null || fail "global python cannot import z3/angr"
 ok "global python z3+angr"
 
+# advanced-RE standalone binaries on PATH
+for t in capa floss yara diec; do
+  command -v "$t" >/dev/null 2>&1 || fail "$t missing from PATH"
+done
+ok "capa/floss/yara/diec"
+
+# advanced-RE python libs importable (global)
+python3 -c 'import capstone, unicorn, keystone, lief, pefile, elftools, miasm, qiling, yara, r2pipe' \
+  || fail "global python cannot import the advanced-RE libs"
+python3 -c 'import pwn, speakeasy, triton' \
+  || fail "global python cannot import pwn/speakeasy/triton"
+ok "advanced-RE python libs"
+
 # QEMU present
 command -v qemu-system-x86_64 >/dev/null 2>&1 || fail "qemu-system-x86_64 missing"
 ok "qemu"
