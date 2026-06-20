@@ -30,6 +30,9 @@ if [ -f /cfg/auth.json ]; then
   chmod 600 "$DATA/auth.json" 2>/dev/null || true
 fi
 
-chown -R vibe:vibe /home/vibe
+# Best-effort: the launcher bind-mounts tui.json read-only under here, which can't
+# be chowned (read-only FS) — that's intentional (it stays the host's file). Every
+# writable path still gets chowned; don't let the expected ro-mount error abort us.
+chown -R vibe:vibe /home/vibe 2>/dev/null || true
 
 exec setpriv --reuid vibe --regid vibe --init-groups opencode "$@"
