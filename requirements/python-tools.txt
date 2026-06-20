@@ -1,8 +1,9 @@
 # Python tools for the RE harness — installed into a uv-managed venv.
 # Set up via requirements/setup.sh (host) or requirements/Dockerfile (container).
-z3-solver
-angr
+# Pin angr — it brings a consistent stack (archinfo/pyvex/claripy/cle) AND z3.
+# Listing z3-solver separately made the resolver backtrack to an ancient, broken
+# angr 9.0.x; pinning angr fixes that and z3 arrives as a dependency.
+angr==9.2.221
 # Add more as your investigations need them, e.g.:
 # pwntools
 # capstone
-# unicorn

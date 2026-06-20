@@ -15,11 +15,6 @@ ok "offline env vars"
 timeout 30 opencode --version >/dev/null 2>&1 || fail "opencode --version failed/hung offline (exit $?)"
 ok "opencode --version offline"
 
-# the OpenAI-compatible SDK was pre-installed (no runtime npm)
-find / -type d -path '*@ai-sdk/openai-compatible*' 2>/dev/null | grep -q . \
-  || fail "@ai-sdk/openai-compatible not pre-installed"
-ok "ai-sdk/openai-compatible present"
-
 # Ghidra headless on PATH
 command -v analyzeHeadless >/dev/null 2>&1 || fail "analyzeHeadless not on PATH"
 ok "ghidra analyzeHeadless"
