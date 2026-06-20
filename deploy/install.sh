@@ -17,6 +17,7 @@ fi
 # 2. seed config + auth (NEVER clobber an existing file)
 mkdir -p "$CFG/guests"
 [ -f "$CFG/opencode.json" ] || cp "$HERE/config/opencode.json" "$CFG/opencode.json"
+[ -f "$CFG/tui.json" ]      || cp "$HERE/config/tui.json"      "$CFG/tui.json"
 if [ ! -f "$CFG/auth.json" ]; then cp "$HERE/config/auth.json.sample" "$CFG/auth.json"; chmod 600 "$CFG/auth.json"; fi
 
 # 3. install the launcher
@@ -29,5 +30,6 @@ Installed.
   launcher: $BIN/vibe-reverse   (ensure $BIN is on your PATH)
   config:   $CFG/opencode.json  (set your internal LLM baseURL + model id)
   auth:     $CFG/auth.json      (set your bearer token; already chmod 600)
+  tui:      $CFG/tui.json       (opencode TUI keybinds; edit to taste)
 Then:  cd <case-folder> && vibe-reverse
 EOF

@@ -15,7 +15,7 @@ else
 fi
 
 cp "$HERE/install.sh" "$HERE/vibe-reverse" "$STAGE/"
-cp "$HERE/config/opencode.json" "$HERE/config/auth.json.sample" "$STAGE/config/"
+cp "$HERE/config/opencode.json" "$HERE/config/auth.json.sample" "$HERE/config/tui.json" "$STAGE/config/"
 [ -f "$HERE/README.md" ] && cp "$HERE/README.md" "$STAGE/"
 [ -f "$HERE/windows-guest.md" ] && cp "$HERE/windows-guest.md" "$STAGE/"
 ( cd "$STAGE" && find . -type f ! -name SHA256SUMS | sort | xargs sha256sum > SHA256SUMS )

@@ -6,7 +6,7 @@ run per case folder.
 ## Build (internet host)
 ```sh
 # put your internal CA at deploy/ca.pem (optional), then:
-GHIDRA_SHA256=<sha> sh deploy/build.sh     # -> vibe-reverse:latest
+sh deploy/build.sh                         # -> vibe-reverse:latest (Ghidra/JDK shas pinned inside)
 sh deploy/export.sh                        # -> dist/vibe-reverse-bundle.tgz
 ```
 
@@ -15,6 +15,7 @@ sh deploy/export.sh                        # -> dist/vibe-reverse-bundle.tgz
 tar xzf vibe-reverse-bundle.tgz && cd vibe-reverse-bundle && sh install.sh
 # then edit ~/.config/vibe-reverse/opencode.json (LLM baseURL + model id)
 #      and ~/.config/vibe-reverse/auth.json       (your bearer token)
+#  opt. edit ~/.config/vibe-reverse/tui.json      (opencode TUI keybinds)
 ```
 
 ## Use

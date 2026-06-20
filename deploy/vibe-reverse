@@ -22,6 +22,9 @@ if [ -e /dev/kvm ]; then
 fi
 # optional guest images (e.g. windows.qcow2)
 [ -d "$CFG/guests" ] && set -- "$@" -v "$CFG/guests":/guests:ro
+# opencode TUI keybinds: map tui.json into opencode's config dir (per `opencode
+# debug paths`, config resolves to /state/.config/opencode with HOME=/state).
+[ -f "$CFG/tui.json" ] && set -- "$@" -v "$CFG/tui.json":/state/.config/opencode/tui.json:ro
 set -- "$@" "$IMAGE"
 
 if [ "$PRINT" = 1 ]; then printf '%s ' "$@"; echo; exit 0; fi
