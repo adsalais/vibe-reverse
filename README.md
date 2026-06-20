@@ -8,6 +8,7 @@ reverse-engineering investigation through a disciplined loop:
 Works in **Claude Code** and **opencode** (same install). Heavy tool output goes
 to files; you review a short, self-checked plan at each step.
 
+- **How it works:** `ARCHITECTURE.md` (full workflow)
 - **Design spec:** `docs/superpowers/specs/2026-06-20-reverse-engineering-harness-design.md`
 - **Install:** see `INSTALL.md`
 - **Status:** v1 spine built (orchestrator, preflight, planning+self-review gate, scripting). Native phases next.
