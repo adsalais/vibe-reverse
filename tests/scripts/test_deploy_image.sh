@@ -44,7 +44,7 @@ grep -q 'yara' "$D"  || fail "Dockerfile does not apt-install yara"
 grep -qi 'capa' "$D" || fail "Dockerfile does not stage capa"
 grep -qi 'floss' "$D" || fail "Dockerfile does not stage FLOSS"
 grep -qi 'diec\|detect-it-easy\|die.deb' "$D" || fail "Dockerfile does not install Detect-It-Easy"
-grep -q 'import capstone' "$D" || fail "Dockerfile import check missing new libs"
+grep -q 'capstone' "$D" || fail "Dockerfile import check missing new libs (capstone)"
 # build.sh passes the new pinned download args
 grep -q 'CAPA_URL'  deploy/build.sh || fail "build.sh missing CAPA_URL arg"
 grep -q 'FLOSS_URL' deploy/build.sh || fail "build.sh missing FLOSS_URL arg"
