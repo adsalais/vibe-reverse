@@ -23,6 +23,10 @@ no network device at all):
 vmrun.sh <sample> <investigation-dir> --mode trace|gdb-script|gdb-server [--timeout N]
 ```
 
+For a **Windows PE** sample, detonate in the Windows guest instead:
+`vmrun.sh <sample.exe> <investigation-dir> --guest windows` (needs a prepared
+`~/.config/vibe-reverse/guests/windows.qcow2`; see windows-guest.md).
+
 Results land in `artifacts/dynamic/`. If `vmrun.sh` is not present (running the
 skills outside the container), fall back to `dynamic_trace.sh` **inside an external
 sandbox** — the consent + isolation rule above still applies.
