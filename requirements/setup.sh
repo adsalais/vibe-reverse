@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # setup.sh — install every external tool the RE harness uses.
 #   * system tools via your OS package manager (apt or brew), best-effort
-#   * Python tools (angr, z3, ...) into a uv-managed venv at $RE_HARNESS_VENV
+#   * Python tools (angr, z3, ...) into a stdlib venv at $RE_HARNESS_VENV
 # Idempotent; safe to re-run. Review before running — it installs software.
 set -eu
 
@@ -19,20 +19,15 @@ else
   echo "  no apt/brew detected — install these yourself: $SYS_APT" >&2
 fi
 
-echo "==> uv"
-if ! command -v uv >/dev/null 2>&1; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-  export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-fi
-
-echo "==> python tools in a uv venv ($VENV)"
-uv venv "$VENV"
-uv pip install --python "$VENV/bin/python" -r "$DIR/python-tools.txt"
+echo "==> python tools in a venv ($VENV)"
+python3 -m venv "$VENV"
+"$VENV/bin/pip" install --upgrade pip
+"$VENV/bin/pip" install -r "$DIR/python-tools.txt"
 
 echo "==> Ghidra (manual — large; not auto-installed)"
 cat <<'GHIDRA'
-  1) install a JDK 17+:  sudo apt-get install -y openjdk-17-jdk unzip wget
-                         (macOS: brew install openjdk)
+  1) install a JDK 21:   sudo apt-get install -y openjdk-21-jdk unzip wget
+                         (macOS: brew install openjdk@21)
   2) download:           https://github.com/NationalSecurityAgency/ghidra/releases
   3) unzip and add ghidra_*/support to PATH (provides analyzeHeadless)
 GHIDRA

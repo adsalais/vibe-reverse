@@ -9,8 +9,8 @@ sh requirements/setup.sh
 ```
 
 Installs the system tools (via apt/brew) and the Python tools (angr, z3, …) into a
-**uv-managed venv** at `$RE_HARNESS_VENV` (default `~/.local/share/re-harness/venv`).
-Ghidra is printed as a manual step (it needs a JDK + a large download).
+**stdlib `python3 -m venv`** at `$RE_HARNESS_VENV` (default `~/.local/share/re-harness/venv`).
+Ghidra is printed as a manual step (it needs a JDK 21 + a large download).
 
 ## Option B — Docker (`Dockerfile`)
 
@@ -19,13 +19,16 @@ docker build -f requirements/Dockerfile -t re-harness .
 docker run --rm -it -v "$PWD:/work" re-harness
 ```
 
-Same tools, isolated; the venv is on `PATH`, so `python` is the venv Python.
+Same tools, isolated; the container installs the Python tools **globally** (no
+venv), so `python` is the image Python with angr/z3 available.
 
-## The Python venv (uv)
+## The Python tools
 
-- Python RE tools live in a venv — **never system Python**.
-- Location: `$RE_HARNESS_VENV` (override the env var to relocate it).
-- The harness runs them via `"$RE_HARNESS_VENV/bin/python"` (or `uv run`), so it
+- On the **host**, Python RE tools live in a stdlib venv — **never system Python**.
+  In the **container**, they are installed globally (the image is the isolation).
+- Location (host): `$RE_HARNESS_VENV` (override the env var to relocate it).
+- The harness runs them via `"$RE_HARNESS_VENV/bin/python"`, falling back to
+  `python3` when that path is unset (e.g. the global container install), so it
   works from any investigation directory.
 - Add tools by editing `python-tools.txt`, then re-run `setup.sh` (or rebuild).
 
