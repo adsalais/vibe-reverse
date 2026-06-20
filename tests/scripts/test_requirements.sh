@@ -8,6 +8,10 @@ fail() { echo "FAIL: $1" >&2; exit 1; }
 [ -s requirements/python-tools.txt ] || fail "python-tools.txt missing/empty"
 grep -qi 'z3'   requirements/python-tools.txt || fail "python-tools.txt missing z3"
 grep -qi 'angr' requirements/python-tools.txt || fail "python-tools.txt missing angr"
+for pkg in capstone keystone-engine unicorn lief pefile pyelftools \
+           yara-python r2pipe pwntools miasm qiling; do
+  grep -qi "$pkg" requirements/python-tools.txt || fail "python-tools.txt missing $pkg"
+done
 
 # setup.sh: valid POSIX sh, uses a stdlib venv + the venv var, and NO uv
 sh -n requirements/setup.sh || fail "setup.sh syntax error"

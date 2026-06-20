@@ -1,9 +1,38 @@
-# Python tools for the RE harness — installed into a uv-managed venv.
-# Set up via requirements/setup.sh (host) or requirements/Dockerfile (container).
+# Python tools for the RE harness — installed GLOBALLY in the container
+# (requirements/Dockerfile, deploy/Dockerfile) or into a host venv (setup.sh).
 # Pin angr — it brings a consistent stack (archinfo/pyvex/claripy/cle) AND z3.
-# Listing z3-solver separately made the resolver backtrack to an ancient, broken
-# angr 9.0.x; pinning angr fixes that and z3 arrives as a dependency.
+# Pinning angr stops the resolver backtracking to an ancient broken 9.0.x.
 angr==9.2.221
-# Add more as your investigations need them, e.g.:
-# pwntools
-# capstone
+
+# disassemble / assemble / emulate (patching, deobfuscation, devirt helpers)
+capstone
+keystone-engine
+unicorn
+
+# parse / modify binary formats
+lief
+pefile
+pyelftools
+
+# signatures, radare2 scripting, exploit/CTF utilities
+yara-python
+r2pipe
+pwntools
+
+# control-flow deobfuscation & devirtualization frameworks
+miasm
+
+# emulation: unpack / config-extract without full detonation
+qiling
+# Windows user-mode malware emulation (pairs with the Windows guest)
+speakeasy-emulator
+
+# Triton (Quarkslab) — taint + symbolic DBA for devirtualization.
+# If no platform wheel installs cleanly, build it in the Dockerfile builder stage
+# instead (see deploy/Dockerfile) and drop this line.
+triton-library
+
+# NOTE: pin exact versions once the first container build succeeds (the build's
+# import check is the gate); record the resolved versions here for reproducibility.
+# capa + FLOSS are NOT here — they ship as standalone binaries (deploy/Dockerfile)
+# to avoid dragging vivisect deps into angr's resolution.
