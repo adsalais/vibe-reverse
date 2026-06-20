@@ -94,7 +94,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements/python-tools.txt /tmp/python-tools.txt
 RUN pip install --no-cache-dir -r /tmp/python-tools.txt \
  && python -c 'import angr, z3, capstone, unicorn, keystone, lief, pefile, elftools, miasm, qiling, yara, r2pipe' \
- && python -c 'import pwn, speakeasy' \
+ && python -c 'import pwn' \
  && python -c 'import triton' \
  && rm -f /tmp/python-tools.txt
 

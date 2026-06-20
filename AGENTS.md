@@ -116,7 +116,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
   `install`-ed to `/usr/local/bin`) — never pip, to keep vivisect out of angr's
   resolution. **Detect-It-Easy** ships as a Debian `.deb` (`diec` CLI), installed
   like `radare2.deb`. **`yara`** is from apt. The rest (capstone/keystone/unicorn/
-  lief/pefile/pyelftools/miasm/qiling/pwntools/speakeasy/triton) install globally
+  lief/pefile/pyelftools/miasm/qiling/pwntools/triton) install globally
   via `python-tools.txt`. **Triton** is the integration risk: prefer the
   `triton-library` wheel; fall back to a builder-stage source build if no wheel
   resolves. The build's `python -c 'import …'` check is the gate.

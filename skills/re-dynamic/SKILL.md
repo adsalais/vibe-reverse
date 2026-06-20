@@ -48,8 +48,8 @@ a custom packer. It is still running code: keep it **no-network** and treat it u
 the same consent rule. Prefer it to native detonation when it suffices.
 
 - Linux/Windows user-mode: adapt `templates/qiling_emulate.py` via **`re-scripting`**
-  (set the rootfs + per-sample hooks). Windows user-mode malware can also use
-  `speakeasy`.
+  (set the rootfs + per-sample hooks). For Windows samples that need real execution,
+  detonate in the no-network **Windows microVM** (`vmrun.sh --guest windows`).
 - Emulation can be slow — apply `../reverse-engineering/references/long-running-ops.md`
   (background + budget + **ask before killing**).
 - Dumps land in `artifacts/dynamic/`; feed recovered config to `re-config`.

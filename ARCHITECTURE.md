@@ -204,8 +204,10 @@ The baked toolset (see `deploy/Dockerfile` + `requirements/python-tools.txt`):
 Ghidra/radare2/objdump/binutils, `upx`, Detect-It-Easy, `capa`, FLOSS, `yara`,
 `gdb`/`ltrace`/`strace`, `qemu` (microVM), and the Python stack — `angr`/`z3`,
 `capstone`/`keystone`/`unicorn`, `miasm`/Triton, `qiling`, `lief`/`pefile`/
-`pyelftools`, `pwntools`, `speakeasy`. Python tools install **globally**; scripts
-call `python3` directly. For a dev host, `requirements/setup.sh` provides them.
+`pyelftools`, `pwntools`. Python tools install **globally**; scripts call `python3`
+directly. For a dev host, `requirements/setup.sh` provides them. (speakeasy is
+excluded — it pins unicorn 1.0.2, incompatible with py3.12 + qiling; Windows
+malware uses the no-network Windows microVM instead.)
 
 ---
 

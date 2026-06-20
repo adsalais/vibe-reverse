@@ -18,7 +18,6 @@
 | `miasm`, Triton (python) | IR, taint, symbolic — control-flow deobf & devirtualization |
 | `qiling` (python) | full-system-lite emulation: unpack, config-extract without detonating |
 | `lief`, `pefile`, `pyelftools` (python) | parse/modify PE/ELF/Mach-O |
-| `speakeasy` (python) | emulate Windows user-mode malware in-container |
 
 You are on an air-gapped network: every tool above is already installed. Never try
 to install anything. If a tool seems missing, it is a PATH/usage issue.

@@ -27,8 +27,10 @@ miasm
 # emulation: unpack / config-extract without full detonation.
 # >=1.4.6 accepts unicorn 2.x; 1.2.x pins unicorn==1.0.2 (py3.12-incompatible).
 qiling>=1.4.6
-# Windows user-mode malware emulation (pairs with the Windows guest)
-speakeasy-emulator
+# NOTE: speakeasy-emulator is intentionally EXCLUDED — every release hard-pins
+# unicorn==1.0.2, which (a) imports distutils (gone in py3.12) and (b) conflicts
+# irreconcilably with qiling's unicorn>=2.0.1. Windows malware is handled by the
+# no-network Windows microVM guest (vmrun.sh --guest windows), not in-container.
 
 # Triton (Quarkslab) — taint + symbolic DBA for devirtualization.
 # If no platform wheel installs cleanly, build it in the Dockerfile builder stage

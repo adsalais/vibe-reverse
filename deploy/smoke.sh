@@ -35,8 +35,8 @@ ok "capa/floss/yara/diec"
 # advanced-RE python libs importable (global)
 python3 -c 'import capstone, unicorn, keystone, lief, pefile, elftools, miasm, qiling, yara, r2pipe' \
   || fail "global python cannot import the advanced-RE libs"
-python3 -c 'import pwn, speakeasy, triton' \
-  || fail "global python cannot import pwn/speakeasy/triton"
+python3 -c 'import pwn, triton' \
+  || fail "global python cannot import pwn/triton"
 ok "advanced-RE python libs"
 
 # QEMU present
