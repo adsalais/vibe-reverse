@@ -15,9 +15,10 @@ KEY=$(python3 -c 'import sys; print("".join(chr((ord(c)+1)%256) for c in sys.arg
 OUT=$("$BIN" "$USER" "$KEY") || fail "binary rejected recovered key (got: $OUT)"
 printf '%s' "$OUT" | grep -q "Correct" || fail "expected Correct!, got: $OUT"
 
-# If z3 is installed, the z3 skeleton must recover the same key.
-if python3 -c 'import z3' >/dev/null 2>&1; then
-  Z=$(python3 -c 'import sys; sys.path.insert(0,"skills/re-solve/templates"); import z3_skel; print(z3_skel.solve("AB"))')
+# If z3 is installed (harness venv preferred), the z3 skeleton must recover the key.
+PY="${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}/bin/python"; [ -x "$PY" ] || PY=python3
+if "$PY" -c 'import z3' >/dev/null 2>&1; then
+  Z=$("$PY" -c 'import sys; sys.path.insert(0,"skills/re-solve/templates"); import z3_skel; print(z3_skel.solve("AB"))')
   [ "$Z" = "$KEY" ] || fail "z3_skel disagrees: $Z != $KEY"
   echo "(z3 present: z3_skel recovered $Z)"
 else

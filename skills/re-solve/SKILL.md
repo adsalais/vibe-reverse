@@ -16,8 +16,14 @@ Recover an input that satisfies a check.
 - **Path-finding (angr)** — "find input that reaches the success branch": use
   `templates/angr_skel.py` with FIND/AVOID addresses from `re-static`.
 
-Get the logic and addresses from **`re-static`**. If `z3`/`angr` are missing,
-install via **`re-preflight`** first.
+Get the logic and addresses from **`re-static`**. `z3`/`angr` live in the
+harness's uv venv — run them with the venv Python:
+
+```sh
+"${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}/bin/python" templates/z3_skel.py
+```
+
+If they're missing, set up the venv via **`re-preflight`** / `requirements/setup.sh`.
 
 ## Always verify
 

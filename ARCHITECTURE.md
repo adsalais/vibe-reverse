@@ -191,6 +191,10 @@ Ghidra is handled as a commented manual recipe (it needs a JDK + download, not a
 package). If a tool is absent, phase skills **degrade gracefully** (e.g. no Ghidra
 → radare2 → objdump) and note the degradation in the plan.
 
+For a one-shot install of **everything**, see `requirements/` — `setup.sh` (host)
+or `Dockerfile` (container). Python tools (angr, z3) install into a **uv venv** at
+`$RE_HARNESS_VENV`, which the harness invokes via `"$RE_HARNESS_VENV/bin/python"`.
+
 ---
 
 ## 8. On-the-fly scripting

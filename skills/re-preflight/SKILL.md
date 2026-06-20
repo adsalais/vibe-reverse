@@ -28,6 +28,9 @@ It prints a `TOOL / FOUND / PURPOSE` table and writes two files into that dir:
 
 - **Ghidra is manual** (not an apt package): it needs a JDK plus a download/unzip;
   the generated files include that recipe as comments.
+- **Python tools** (angr, z3) install into a **uv venv** at `$RE_HARNESS_VENV`; the
+  generated `install.sh` targets it. For a one-shot full install of everything, see
+  `requirements/setup.sh` (host) or `requirements/Dockerfile` (container).
 - **Graceful degradation:** if a tool is absent, the relevant phase skill falls
   back (e.g. no Ghidra → radare2 → objdump) and says so in its plan — don't block.
 - Tool → purpose details: see `references/tool-cheatsheet.md`.

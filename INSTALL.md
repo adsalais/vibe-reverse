@@ -37,3 +37,14 @@ Ask your agent: *"list your reverse-engineering skills"* — you should see
 
 > Note: opencode's bundled helper-file support (scripts/ inside a skill) is
 > confirmed in source but undocumented — pin a known opencode version if relied on.
+
+## External tools (radare2, Ghidra, angr, z3, …)
+
+The skills are instructions; the RE tools install separately. See **`requirements/`**:
+
+- `sh requirements/setup.sh` — install on your host. Python tools (angr, z3) go
+  into a **uv venv** at `$RE_HARNESS_VENV` (default `~/.local/share/re-harness/venv`).
+- or `requirements/Dockerfile` — a container with everything preinstalled.
+
+`re-preflight` detects what's missing at runtime and writes per-investigation
+`install.sh` / `Dockerfile.snippet`.

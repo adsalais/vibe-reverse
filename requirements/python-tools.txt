@@ -1,0 +1,8 @@
+# Python tools for the RE harness — installed into a uv-managed venv.
+# Set up via requirements/setup.sh (host) or requirements/Dockerfile (container).
+z3-solver
+angr
+# Add more as your investigations need them, e.g.:
+# pwntools
+# capstone
+# unicorn
