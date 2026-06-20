@@ -9,7 +9,7 @@ DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 VENV="${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}"
 
 echo "==> system tools"
-SYS_APT="file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd yara"
+SYS_APT="file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd yara build-essential"
 SYS_BREW="binutils binwalk radare2 gdb upx"   # macOS: ltrace/strace/xxd differ or are built-in
 if command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update && sudo apt-get install -y $SYS_APT

@@ -5,9 +5,11 @@
 # (this image's pip is not PEP-668 externally-managed — no venv, no separate tool).
 FROM python:3.12-slim-trixie
 
-# 1) system tools (Debian trixie apt)
+# 1) system tools (Debian trixie apt). build-essential: miasm has a C extension
+# (no wheel) compiled at pip-install, and its default jitter compiles C at runtime.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd yara \
+        build-essential \
         ca-certificates curl git unzip \
     && rm -rf /var/lib/apt/lists/*
 

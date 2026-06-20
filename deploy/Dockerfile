@@ -75,9 +75,12 @@ FROM python:3.12-slim-trixie AS runtime
 # RE tools + Java (openjdk-21-jdk = full JDK with javac, for Ghidra's .java
 # GhidraScripts) + the entrypoint's identity tools (passwd: usermod/groupmod/
 # groupadd; util-linux: setpriv). radare2/upx are staged from the builder.
+# build-essential: miasm has a C extension with no wheel (compiled at pip-install)
+# AND its default jitter compiles C at runtime — so the compiler stays in the image.
 COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
       file binutils binwalk gdb ltrace strace xxd yara \
+      build-essential \
       qemu-system-x86 qemu-utils xorriso dosfstools mtools \
       ca-certificates openjdk-21-jdk passwd util-linux \
       /opt/dl/radare2.deb /opt/dl/die.deb \
