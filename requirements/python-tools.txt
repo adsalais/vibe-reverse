@@ -7,7 +7,9 @@ angr==9.2.221
 # disassemble / assemble / emulate (patching, deobfuscation, devirt helpers)
 capstone
 keystone-engine
-unicorn
+# unicorn 2.x — 1.0.2 imports distutils (removed in Python 3.12); floor-pin so the
+# resolver can't backtrack into it via an old qiling.
+unicorn>=2.0.1
 
 # parse / modify binary formats
 lief
@@ -22,8 +24,9 @@ pwntools
 # control-flow deobfuscation & devirtualization frameworks
 miasm
 
-# emulation: unpack / config-extract without full detonation
-qiling
+# emulation: unpack / config-extract without full detonation.
+# >=1.4.6 accepts unicorn 2.x; 1.2.x pins unicorn==1.0.2 (py3.12-incompatible).
+qiling>=1.4.6
 # Windows user-mode malware emulation (pairs with the Windows guest)
 speakeasy-emulator
 
