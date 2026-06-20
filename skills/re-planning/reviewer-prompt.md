@@ -13,7 +13,10 @@ Check and report issues for each:
 3. **Evidence/honesty** — is every claim backed by an `artifacts/` file, or
    explicitly marked as an unconfirmed hypothesis? Flag overclaims.
 4. **Scope** — does it propose the NEXT step, not a five-step leap?
+5. **Cost & checkpoint** — does each proposed step carry a cost tag (⚡/⏳/🐢)?
+   Is the decision a numbered list? Was the checkpoint recorded (STATE.md updated)?
+   Flag if missing.
 
-Return JSON: {"issues":[{"type":"consistency|relevancy|evidence|scope",
+Return JSON: {"issues":[{"type":"consistency|relevancy|evidence|scope|cost",
 "where":"...","problem":"...","fix":"..."}], "verdict":"ok|revise"}.
 Default to "revise" if uncertain.

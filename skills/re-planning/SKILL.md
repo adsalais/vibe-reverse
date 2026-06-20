@@ -31,12 +31,18 @@ Save to `docs/reverse/<investigation>/NN-<phase>-plan.md` (zero-padded `NN`):
 - <what is NOT yet confirmed>
 
 ## Proposed next steps
-1. <next action> — why, which skill/tool, expected output
-2. <alternative branch if applicable>
+1. <next action> — why, which skill/tool, expected output — **cost: ⚡/⏳/🐢**
+2. <alternative branch if applicable> — **cost: ⚡/⏳/🐢**
 
 ## Decision needed from you
-- [ ] Approve as-is   [ ] Approve with changes   [ ] Redirect
+1. Approve as-is
+2. Approve with changes
+3. Redirect
+Which option?
 ```
+
+Cost tags: ⚡ fast (seconds) · ⏳ minutes · 🐢 long (tens of minutes+) — so the human
+approves with runtime in view.
 
 ## 2. Self-review BEFORE presenting (fix inline)
 
@@ -61,6 +67,19 @@ Present a ≤3-line summary + the plan's path, then **WAIT**. Do not start the n
 phase until the human responds. They approve in chat ("approved" / "do 1, skip 2"
 / "redirect"), or edit the plan file and say "go".
 
+## 4. Checkpoint (update STATE.md at every gate)
+
+Each plan is a checkpoint. When you write the plan, update the current binary's
+`STATE.md`:
+- `phase:` / `status: awaiting-approval`
+- `last-approved-plan:` (the previous one) and `next-step:` (the recommended step)
+- refresh `## Open questions`
+- reconcile the `## Background jobs` ledger (mark finished jobs `done`).
+
+This is what lets `re-continue` resume the investigation in a future session. For
+slow steps follow `../reverse-engineering/references/long-running-ops.md`
+(background + budget + **ask before killing**).
+
 ## Red flags — STOP, you are rationalizing
 
 | Thought | Reality |
@@ -70,5 +89,6 @@ phase until the human responds. They approve in chat ("approved" / "do 1, skip 2
 | "The user is in a hurry, skip the ceremony" | The gate is fastest overall; it prevents wrong turns. |
 | "The plan is trivial" | Trivial plans are approved in seconds — still write it. |
 | "I already know what they'll say" | Then approval costs nothing. Wait for it. |
+| "This is taking too long, I'll kill it and move on" | A budget-hit is a question for the user, not your call. Ask (numbered options). |
 
 All of these mean: write the plan, self-review, and STOP.
