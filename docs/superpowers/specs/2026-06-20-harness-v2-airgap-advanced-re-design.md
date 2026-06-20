@@ -33,7 +33,7 @@ v2 hardens it for **air-gapped blue-team malware analysis** and broadens it to
    investigation can be paused and continued another day via a new `re-continue`
    skill.
 6. **Expanded tooling** baked into the air-gapped image (capa, FLOSS, yara, DIE,
-   capstone/unicorn/keystone, lief/pefile, miasm, Triton, qiling, frida, speakeasy,
+   capstone/unicorn/keystone, lief/pefile, miasm, Triton, qiling, speakeasy,
    pwntools, …).
 
 The skill family goes **10 → 14**: remove `re-preflight`; add `re-devirtualize`,
@@ -59,7 +59,7 @@ packs remain roadmap.
 | **Capabilities in** | Deob router; `re-devirtualize`; `re-antianalysis`; `re-crypto`; `re-config`; static/dynamic additions. |
 | **Capabilities out** | `re-diff` (binary diffing); whitebox crypto (own spec). |
 | **Long-running ops** | Background + soft time budget + checkpoint; **ask the user before killing**, never auto-kill. |
-| **Tooling** | All recommended **and** optionals (Triton, frida, speakeasy). |
+| **Tooling** | All recommended **and** optionals (Triton, speakeasy). frida removed from v2 (deferred). |
 | **Resume** | New `re-continue` skill + per-binary `STATE.md` live cursor. |
 | **Choice prompts** | Whenever a skill asks the user to decide, present a **numbered list** ending "Which option?". |
 
@@ -132,9 +132,10 @@ every heavy skill:
   devirtualization, capa, FLOSS) run **detached**, writing progress/results to
   `artifacts/`, and are recorded in the `STATE.md` **background-jobs ledger**
   (id, command, start time, expected artifact, soft budget, status).
-- Each carries a **soft time budget** (defaults: Ghidra 10m, angr 15m, emulation
-  5m, devirt per-handler 10m — all overridable). The agent states the expected
-  cost **before** launching.
+- Each carries a **soft time budget** — generous by default, **minimum 30 min, up
+  to 1 hour**, all overridable (defaults: Ghidra 30m, emulation 30m, angr/symbolic
+  exec 60m, devirt per-handler 60m). The agent states the expected cost **before**
+  launching.
 - On budget-hit the agent **does not auto-kill**. It surfaces the situation and
   asks the user, as a numbered list: *1. keep waiting (+N min) · 2. kill and use
   the partial result · 3. kill and try another route · Which option?*
@@ -232,8 +233,7 @@ r2pipe, pwntools, …). TDD discipline retained.
   config extraction without full detonation, plus **run-to-unpack** + memory dump.
   Emulation runs in-container with **no network**; full native detonation still
   goes only to the no-network microVM (and `speakeasy` for Windows user-mode
-  emulation in-container). `frida`/`frida-tools` drive live instrumentation against
-  a `frida-server` staged into the detonation guests.
+  emulation in-container).
 
 ---
 
@@ -401,7 +401,7 @@ not break that resolution.
 ### 7.1 Python libraries (global pip, in `requirements/python-tools.txt`)
 
 `capstone`, `keystone-engine`, `unicorn`, `lief`, `pefile`, `pyelftools`,
-`yara-python`, `r2pipe`, `pwntools`, `miasm`, `qiling`, `frida`, `frida-tools`,
+`yara-python`, `r2pipe`, `pwntools`, `miasm`, `qiling`,
 `speakeasy-emulator`, and **Triton** (the integration risk — pip wheel or
 builder-stage build; the plan locks the method). The build's import check is
 extended (`python -c 'import angr, z3, capstone, unicorn, keystone, lief, pefile,
@@ -416,10 +416,7 @@ and **Detect-It-Easy** (`diec`).
 
 ### 7.3 Apt / runtime additions
 
-`yara` (CLI), plus any DIE/frida runtime deps. `speakeasy` runs in-container
-(Python). `frida-server` is staged into the detonation guests (Linux rootfs via
-`build-rootfs.sh`, and the Windows guest) so host-side `frida-tools` can drive live
-instrumentation — the heaviest dynamic integration, staged last.
+`yara` (CLI), plus any DIE runtime deps. `speakeasy` runs in-container (Python).
 
 ### 7.4 Image & requirements
 
@@ -480,6 +477,9 @@ cheat-sheet (§4.1) documents each tool's purpose.
 - **`re-diff` / binary diffing** (Diaphora) — variant/family attribution.
 - **Firmware / managed / wasm packs** — still roadmap (`re-triage` already routes to
   "pack not built yet").
+- **frida live instrumentation** (`frida` / `frida-tools` + `frida-server` in the
+  detonation guests) — removed from v2; revisit later if live hooking is needed
+  beyond emulation (qiling) and tracing (gdb/strace/ltrace).
 
 ---
 
@@ -534,8 +534,6 @@ Each plan stays independently shippable; docs are threaded through every plan.
   build must verify they do not downgrade angr's pinned stack
   (claripy/pyvex/cle/z3). capa/FLOSS are kept out of the pip env (standalone
   binaries) precisely to avoid the vivisect clash.
-- **frida live instrumentation** — requires `frida-server` in the detonation
-  guests; staged last and may land as a follow-up if guest integration is heavy.
 - **Devirtualization scope** — full automated devirt of commercial protectors is
   research-grade; the skill targets *assisted, partial, confidence-tagged* lifts,
   not a one-click unprotect.
