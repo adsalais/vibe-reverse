@@ -51,11 +51,11 @@ Build the air-gapped image (from the repo root; Ghidra/JDK shas are pinned insid
 sh deploy/build.sh            # -> vibe-reverse:latest
 ```
 
-Smoke-test the image offline, as a mapped uid (mirrors the real launcher):
+Smoke-test the image offline (smoke runs as root via `--entrypoint sh`, which
+bypasses the remap entrypoint — root already has a passwd entry):
 
 ```sh
-docker run --rm --network none --user "$(id -u):$(id -g)" \
-  --tmpfs /state:mode=1777 -e HOME=/state \
+docker run --rm --network none \
   --entrypoint sh vibe-reverse:latest /opt/vibe-reverse/bin/smoke.sh
 ```
 
@@ -96,17 +96,23 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 
 ## Deployment notes (hard-won — don't regress)
 
-- Base image is **`python:3.12-slim-bookworm`** (angr needs Python ≥ 3.12).
-- `radare2` + `upx` are **not** in Debian bookworm → installed from pinned GitHub
+- Base image is **`python:3.12-slim-trixie`** (Debian 13 + CPython 3.12; angr is
+  validated on 3.12, so we pin 3.12 rather than trixie's system 3.13).
+- `radare2` + `upx` are **not** in Debian → installed from pinned GitHub
   releases. Pin **`angr==9.2.221`** (z3 arrives via angr).
+- Python tools install **globally** (`pip install`, no venv/uv — the python
+  image's pip is not PEP-668 managed). `RE_HARNESS_VENV` is left **unset**, so the
+  skills' `${RE_HARNESS_VENV:-…}/bin/python` fallback resolves to global `python3`.
+  The build runs `python -c 'import angr, z3'` so a broken install fails the build.
 - **Never run `opencode` at build time** (it opens a TUI and hangs). The env vars
   `OPENCODE_DISABLE_MODELS_FETCH=1` + `OPENCODE_DISABLE_AUTOUPDATE=1` stop phone-home.
-- **Ghidra 12.x** needs **JDK 21** (a staged Temurin tarball, not Debian's 17), a
-  *full* JDK (it compiles `.java` scripts), and **Java** GhidraScripts — Jython was
-  removed, so the decompiler is `skills/re-static/DecompileExport.java`.
-- A docker **mapped uid has no `/etc/passwd` entry**, which breaks Ghidra
-  (`user.home`) and angr (`getpass`). `deploy/ensure-user.sh` (sourced by the
-  entrypoint and smoke) adds one. Locate opencode's dirs with `opencode debug paths`.
+- **Ghidra 12.x** needs **JDK 21** — now Debian trixie's apt `openjdk-21-jdk` (a
+  *full* JDK; it compiles `.java` scripts), **not** a staged JDK tarball. The
+  decompiler is the Java GhidraScript `skills/re-static/DecompileExport.java`.
+- The image bakes a **`vibe` user**; the entrypoint runs as root, remaps `vibe`
+  onto the host uid/gid (`HOST_UID`/`HOST_GID` from the launcher), then drops to it
+  with **`setpriv`**. This replaces the old world-writable `/etc/passwd` +
+  `ensure-user.sh` shim. Locate opencode's dirs with `opencode debug paths`.
 
 ## Safety model (non-negotiable)
 
