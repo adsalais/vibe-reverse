@@ -5,25 +5,51 @@ description: Use when triage or static analysis shows a binary is packed or obfu
 
 # re-deobfuscate
 
-Make the code readable before deeper analysis.
+A **router**, not a one-shot unpack. Advanced malware **stacks** techniques, so work
+a loop:
 
-## Known packers
+> **inventory → order → peel one layer → re-triage → repeat** — until entropy is
+> normal, strings/imports are readable, and control flow is sane.
+
+## 1. Inventory the layers
+
+Use triage/static signals + `re-static`'s `static_scan.sh` (capa/FLOSS) + DIE
+(`diec`) + entropy to list **every** technique present. Record them:
 
 ```sh
-sh unpack.sh <target> <investigation-dir>
+sh deob_map.sh <investigation-dir>
 ```
 
-Detects/unpacks UPX (pre-installed on the air-gapped image).
+Keep `artifacts/deobfuscation/map.md` current. Identify each layer with
+`references/obfuscation-taxonomy.md`.
 
-## Nested layers
+## 2. Order — outermost first
 
-After unpacking, **re-run `re-triage` and `re-static` on the unpacked artifact.**
-Repeat until entropy is normal and the code is readable (packers nest).
+You can't read flattened code inside a packed blob. Peel packing/encryption before
+control-flow before virtualization.
 
-## Custom deobfuscation
+## 3. Peel, then re-triage
 
-For encrypted strings or control-flow flattening, write a **tested** decoder via
-**`re-scripting`**, apply it, then re-run triage/static on the result.
+Apply the right handler (table below), then **re-run `re-triage` + `re-static`** on
+the result. A peeled payload may be a new binary → `add_binary.sh` and triage it as
+a peer.
+
+| Technique | Handler / route |
+|---|---|
+| Packing | `unpack.sh` (UPX); else run-to-unpack / qiling emulate (`re-dynamic`) + lief rebuild |
+| String / API obfuscation | FLOSS, then a tested decoder via `re-scripting` |
+| Stack-strings | FLOSS / scripted reconstruction |
+| Control-flow flattening | de-flatten via miasm/angr (`re-scripting`) |
+| Opaque / bogus predicates | prove constant with z3, patch out (keystone/lief) |
+| **Virtualization** | → **`re-devirtualize`** |
+| **Interleaved anti-analysis** | → **`re-antianalysis`** |
+| **Crypto-gated layer** | → **`re-crypto`**, then re-triage the plaintext |
+
+## Gate balance
+
+Propose the **whole peeling plan** once via `re-planning` (layers + order + cost
+⚡/⏳/🐢); peel the obvious layers; **STOP at the gate** when something new appears (a
+fresh binary, a VM, a layer you can't crack).
 
 Static only here — runtime unpacking belongs to `re-dynamic` (sandboxed). End with
 **`re-planning`**. Relative paths only.
