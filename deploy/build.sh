@@ -18,11 +18,8 @@ GHIDRA_SHA256="${GHIDRA_SHA256:?set GHIDRA_SHA256 to the sha256 of the Ghidra zi
 # radare2 + upx are not in Debian bookworm — fetch official releases:
 RADARE2_DEB_URL="${RADARE2_DEB_URL:-https://github.com/radareorg/radare2/releases/download/6.1.6/radare2_6.1.6_amd64.deb}"
 UPX_URL="${UPX_URL:-https://github.com/upx/upx/releases/download/v5.2.0/upx-5.2.0-amd64_linux.tar.xz}"
-# Temurin JDK 21 — Ghidra 12.x requires JDK 21 (Debian bookworm only ships 17).
-# Refresh URL + sha from the Adoptium API:
-#   curl -fsSL "https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=x64&image_type=jdk&os=linux&vendor=eclipse"
-TEMURIN_URL="${TEMURIN_URL:-https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.11%2B10/OpenJDK21U-jdk_x64_linux_hotspot_21.0.11_10.tar.gz}"
-TEMURIN_SHA256="${TEMURIN_SHA256:-4b2220e232a97997b436ca6ab15cbf70171ecff52958a46159dfa5a8c44ca4de}"
+# Java for Ghidra 12.x (JDK 21) now comes from Debian trixie apt (openjdk-21-jdk)
+# inside the Dockerfile — no staged JDK tarball, so no JDK build args are needed.
 
 # CA placeholder so the build never breaks without an internal CA
 if [ ! -f deploy/ca.pem ]; then
@@ -36,8 +33,6 @@ docker build -t vibe-reverse:latest -f deploy/Dockerfile \
   --build-arg GHIDRA_SHA256="$GHIDRA_SHA256" \
   --build-arg RADARE2_DEB_URL="$RADARE2_DEB_URL" \
   --build-arg UPX_URL="$UPX_URL" \
-  --build-arg TEMURIN_URL="$TEMURIN_URL" \
-  --build-arg TEMURIN_SHA256="$TEMURIN_SHA256" \
   .
 
 echo "built vibe-reverse:latest"
