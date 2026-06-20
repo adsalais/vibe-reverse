@@ -192,8 +192,9 @@ package). If a tool is absent, phase skills **degrade gracefully** (e.g. no Ghid
 → radare2 → objdump) and note the degradation in the plan.
 
 For a one-shot install of **everything**, see `requirements/` — `setup.sh` (host)
-or `Dockerfile` (container). Python tools (angr, z3) install into a **uv venv** at
-`$RE_HARNESS_VENV`, which the harness invokes via `"$RE_HARNESS_VENV/bin/python"`.
+or `Dockerfile` (container). Python tools (angr, z3) install into a **venv** at
+`$RE_HARNESS_VENV` on a host, or **globally** in the container; the harness
+invokes `"$RE_HARNESS_VENV/bin/python"`, falling back to `python3` when unset.
 
 ---
 

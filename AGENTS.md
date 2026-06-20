@@ -28,7 +28,7 @@ design), `INSTALL.md` (install), `deploy/README.md` (deployment), and
 | `skills/<name>/*.sh`, `.../references/` | per-skill helper scripts + reference docs |
 | `deploy/` | Dockerfile, `build`/`export`/`install` scripts, `vibe-reverse` launcher, microVM guest |
 | `tests/scripts/` | deterministic sh + pytest tests (`tests/fixtures/` crackme1, `tests/scenarios/`) |
-| `requirements/` | host/Docker install of RE tools; Python tools (angr/z3) in a uv venv |
+| `requirements/` | host/Docker install of RE tools; Python tools (angr/z3) via pip (venv on host, global in container) |
 | `docs/reverse/` | investigation folders the harness writes (one per run) |
 | `docs/superpowers/` | specs + implementation plans |
 
@@ -84,7 +84,7 @@ them needs **no image rebuild**. Only `skills/`, `deploy/entrypoint.sh`,
 - `re-report` is mandatory — write the report **even on a complete failure**.
 
 **On-the-fly Python** (`re-scripting`): test-first, with inline `# why` comments
-aimed at a learner; runs in the uv venv at `$RE_HARNESS_VENV`.
+aimed at a learner; runs in the harness Python at `$RE_HARNESS_VENV` (or global `python3`).
 
 **Workflow & git**: follow the `superpowers` flow (brainstorm → write plan →
 execute → finish). TDD, small frequent commits, DRY / YAGNI. End every commit
