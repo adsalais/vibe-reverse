@@ -39,4 +39,15 @@ grep -q 'python3 -c' "$S"     || fail "smoke.sh not using global python3"
 grep -q 'import z3, angr' "$S" || fail "smoke.sh missing angr/z3 import"
 ! grep -q '/opt/vibe-reverse/venv' "$S" || fail "smoke.sh still references the venv path"
 
+# advanced-RE tooling baked
+grep -q 'yara' "$D"  || fail "Dockerfile does not apt-install yara"
+grep -qi 'capa' "$D" || fail "Dockerfile does not stage capa"
+grep -qi 'floss' "$D" || fail "Dockerfile does not stage FLOSS"
+grep -qi 'diec\|detect-it-easy\|die.deb' "$D" || fail "Dockerfile does not install Detect-It-Easy"
+grep -q 'import capstone' "$D" || fail "Dockerfile import check missing new libs"
+# build.sh passes the new pinned download args
+grep -q 'CAPA_URL'  deploy/build.sh || fail "build.sh missing CAPA_URL arg"
+grep -q 'FLOSS_URL' deploy/build.sh || fail "build.sh missing FLOSS_URL arg"
+grep -q 'DIE_DEB_URL' deploy/build.sh || fail "build.sh missing DIE_DEB_URL arg"
+
 echo "PASS: test_deploy_image.sh"

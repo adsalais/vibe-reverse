@@ -12,6 +12,12 @@ ARG GHIDRA_URL
 ARG GHIDRA_SHA256
 ARG RADARE2_DEB_URL
 ARG UPX_URL
+ARG CAPA_URL
+ARG CAPA_SHA256
+ARG FLOSS_URL
+ARG FLOSS_SHA256
+ARG DIE_DEB_URL
+ARG DIE_DEB_SHA256
 RUN apt-get update && apt-get install -y --no-install-recommends \
       curl ca-certificates unzip xz-utils \
     && rm -rf /var/lib/apt/lists/*
@@ -31,6 +37,20 @@ RUN mkdir -p /opt/dl \
  && cp /tmp/upx-*-amd64_linux/upx /opt/dl/upx \
  && chmod +x /opt/dl/upx \
  && rm -rf /tmp/upx.tar.xz /tmp/upx-*
+
+# capa + FLOSS: FLARE standalone Linux release binaries (zip -> single binary).
+# Staged here, copied to runtime — they are NOT pip-installed (vivisect deps would
+# clash with angr's pinned stack). Detect-It-Easy ships as a Debian .deb (diec CLI).
+RUN curl -fsSL "$CAPA_URL"  -o /tmp/capa.zip \
+ && echo "${CAPA_SHA256}  /tmp/capa.zip"  | sha256sum -c - \
+ && unzip -q /tmp/capa.zip -d /tmp/capa && cp /tmp/capa/capa /opt/dl/capa \
+ && curl -fsSL "$FLOSS_URL" -o /tmp/floss.zip \
+ && echo "${FLOSS_SHA256}  /tmp/floss.zip" | sha256sum -c - \
+ && unzip -q /tmp/floss.zip -d /tmp/floss && cp /tmp/floss/floss /opt/dl/floss \
+ && chmod +x /opt/dl/capa /opt/dl/floss \
+ && curl -fsSL "$DIE_DEB_URL" -o /opt/dl/die.deb \
+ && echo "${DIE_DEB_SHA256}  /opt/dl/die.deb" | sha256sum -c - \
+ && rm -rf /tmp/capa.zip /tmp/capa /tmp/floss.zip /tmp/floss
 
 # opencode (pinned standalone binary) installed into a HOME we copy to the vibe
 # user. NOT executed at build time (it opens a TUI and hangs).
@@ -59,18 +79,22 @@ FROM python:3.12-slim-trixie AS runtime
 # groupadd; util-linux: setpriv). radare2/upx are staged from the builder.
 COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      file binutils binwalk gdb ltrace strace xxd \
+      file binutils binwalk gdb ltrace strace xxd yara \
       qemu-system-x86 qemu-utils xorriso dosfstools mtools \
       ca-certificates openjdk-21-jdk passwd util-linux \
-      /opt/dl/radare2.deb \
- && install -Dm755 /opt/dl/upx /usr/local/bin/upx \
+      /opt/dl/radare2.deb /opt/dl/die.deb \
+ && install -Dm755 /opt/dl/upx   /usr/local/bin/upx \
+ && install -Dm755 /opt/dl/capa  /usr/local/bin/capa \
+ && install -Dm755 /opt/dl/floss /usr/local/bin/floss \
  && test -x /usr/lib/jvm/java-21-openjdk-amd64/bin/java \
  && rm -rf /var/lib/apt/lists/* /opt/dl
 
 # python tools, installed GLOBALLY (no venv, no extra resolver). Verified at build.
 COPY requirements/python-tools.txt /tmp/python-tools.txt
 RUN pip install --no-cache-dir -r /tmp/python-tools.txt \
- && python -c 'import angr, z3' \
+ && python -c 'import angr, z3, capstone, unicorn, keystone, lief, pefile, elftools, miasm, qiling, yara, r2pipe' \
+ && python -c 'import pwn, speakeasy' \
+ && python -c 'import triton' \
  && rm -f /tmp/python-tools.txt
 
 # the vibe user: a real identity (HOME + passwd entry). The entrypoint remaps its
