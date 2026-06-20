@@ -105,7 +105,7 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 | `re-deobfuscate` | Packers, nested layers, string / control-flow deobfuscation | ✅ built |
 | `re-solve` | Symbolic execution / SMT (angr, z3): keygen, paths, constraints | ✅ built |
 | `re-dynamic` | Run/trace under gdb/ltrace/strace — **sandbox only** | ✅ built |
-| `re-report` | Synthesize `REPORT.md` — **written even on complete failure** | ⏳ Plan 4 |
+| `re-report` | Synthesize `REPORT.md` — **written even on complete failure** | ✅ built |
 
 Each skill is a `SKILL.md` (markdown instructions) plus optional helper scripts
 and `references/` files loaded only when needed.
@@ -269,7 +269,7 @@ usable on its own.
 1. **Plan 1 — spine & packaging** ✅ (orchestrator, preflight, planning+gate, scripting)
 2. **Plan 2 — triage + static** ✅ (re-triage, re-static)
 3. **Plan 3 — deobfuscate + solve + dynamic** ✅ (re-deobfuscate, re-solve, re-dynamic)
-4. **Plan 4 — reporting + example investigation** ⏳
+4. **Plan 4 — reporting + example investigation** ✅ (re-report) — **v1 complete**
 
 ---
 

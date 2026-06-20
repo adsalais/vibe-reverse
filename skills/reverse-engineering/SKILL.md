@@ -35,5 +35,5 @@ next phase → … → report.** One phase at a time; the human approves each pl
 - Use **`re-scripting`** when a task needs custom code.
 - Heavy tool output → `artifacts/`; put only summaries in the plan and chat.
 
-All native-vertical phase skills are built (`re-triage`, `re-static`,
-`re-deobfuscate`, `re-solve`, `re-dynamic`); `re-report` arrives in the next build.
+All v1 phase skills are built (triage → static → deobfuscate / solve / dynamic →
+report). See `docs/reverse/_example/` for a worked investigation.
