@@ -13,3 +13,7 @@ __pycache__/
 
 # compiled test fixtures (rebuilt via tests/fixtures/build.sh)
 tests/fixtures/crackme1
+
+# air-gap deployment: never commit the internal CA or built artifacts
+deploy/ca.pem
+dist/
