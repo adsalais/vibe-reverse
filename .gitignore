@@ -14,8 +14,9 @@ __pycache__/
 # OS noise
 .DS_Store
 
-# compiled test fixtures (rebuilt via tests/fixtures/build.sh)
+# compiled/generated test fixtures (rebuilt via tests/fixtures/build.sh)
 tests/fixtures/crackme1
+tests/fixtures/config_blob.bin
 
 # air-gap deployment: never commit the internal CA or built artifacts
 deploy/ca.pem

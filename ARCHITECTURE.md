@@ -101,14 +101,14 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 | Skill | Role | Status |
 |---|---|---|
 | `re-triage` | Identify the artifact; record scope; route by target family | ✅ built |
-| `re-static` | Decompile & statically analyze; capa/FLOSS scan; route | ✅ built (scan: Plan 3) |
-| `re-deobfuscate` | Stacked-layer **router**: inventory → order → peel → re-triage | ✅ built (router: Plan 3) |
+| `re-static` | Decompile & statically analyze; capa/FLOSS scan; route | ✅ built |
+| `re-deobfuscate` | Stacked-layer **router**: inventory → order → peel → re-triage | ✅ built |
 | `re-devirtualize` | VM-based obfuscation (incl. nested/recursive VMs) | ⏳ Plan 4 |
 | `re-antianalysis` | Detect & neutralize anti-debug/anti-VM/anti-disasm | ⏳ Plan 4 |
-| `re-crypto` | Identify & replicate crypto (decrypt strings/config/C2) | ⏳ Plan 3 |
-| `re-config` | Config & IOC extraction → IOC list + YARA rule | ⏳ Plan 3 |
+| `re-crypto` | Identify & replicate crypto (decrypt strings/config/C2) | ✅ built |
+| `re-config` | Config & IOC extraction → IOC list + YARA rule | ✅ built |
 | `re-solve` | Symbolic execution / SMT (angr, z3): keygen, paths, constraints | ✅ built |
-| `re-dynamic` | Run/trace/**emulate** — **sandbox only** | ✅ built (emulation: Plan 3) |
+| `re-dynamic` | Run/trace/**emulate** — **sandbox only** | ✅ built |
 | `re-report` | Synthesize expert `REPORT.md` — **written even on complete failure** | ✅ built |
 
 Each skill is a `SKILL.md` (markdown instructions) plus optional helper scripts

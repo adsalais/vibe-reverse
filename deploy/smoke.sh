@@ -48,11 +48,11 @@ getent passwd vibe >/dev/null 2>&1 || fail "vibe user missing"
 command -v setpriv >/dev/null 2>&1 || fail "setpriv missing"
 ok "vibe user + setpriv"
 
-# all 10 skills baked
+# all skills baked
 n=$(ls -1d /opt/vibe-reverse/skills/*/ 2>/dev/null | wc -l)
-[ "$n" -eq 10 ] || fail "expected 10 skills, found $n"
+[ "$n" -eq 12 ] || fail "expected 12 skills, found $n"
 [ -f /opt/vibe-reverse/skills/reverse-engineering/SKILL.md ] || fail "orchestrator skill missing"
-ok "10 skills baked"
+ok "12 skills baked"
 
 # CA: if a real cert was baked, it must be in the trust store
 if [ -s /usr/local/share/ca-certificates/internal-ca.crt ]; then
