@@ -1,21 +1,17 @@
 #!/usr/bin/env sh
 set -eu
-SCRIPT="skills/re-report/make_report.sh"
-ROOT="$(mktemp -d)"; trap 'rm -rf "$ROOT"' EXIT
-DIR="$ROOT/inv"; mkdir -p "$DIR/artifacts" "$DIR/scripts"
-printf '# 01 triage plan\n' > "$DIR/01-triage-plan.md"
-printf 'objdump output\n'   > "$DIR/artifacts/objdump.txt"
-printf 'print("k")\n'       > "$DIR/scripts/solve.py"
+TPL="skills/re-report/report-template.md"
 fail() { echo "FAIL: $1" >&2; exit 1; }
-
-OUT=$(sh "$SCRIPT" "$DIR") || fail "make_report.sh nonzero"
-R="$DIR/REPORT.md"
-[ -f "$R" ] || fail "REPORT.md not created"
-for s in "Outcome" "Approaches tried" "Dead ends" "Reproduction" "Index"; do
-  grep -q "$s" "$R" || fail "missing section: $s"
+[ -f "$TPL" ] || fail "report-template.md missing"
+# the make_report.sh scaffolder is gone — the report is written by hand from the template
+[ ! -f skills/re-report/make_report.sh ] || fail "make_report.sh should be deleted"
+# required top-down structure (summary first, expert sections, IOCs + YARA)
+for s in "Executive summary" "Key findings" "Approaches tried" \
+         "Obfuscation & anti-analysis" "Crypto & config" "IOCs" "YARA" \
+         "Dead ends" "Reproduction" "Index"; do
+  grep -qi "$s" "$TPL" || fail "template missing section: $s"
 done
-grep -q "01-triage-plan.md" "$R"     || fail "plan not indexed"
-grep -q "artifacts/objdump.txt" "$R" || fail "artifact not indexed"
-grep -q "scripts/solve.py" "$R"      || fail "script not indexed"
-
+# executive summary must be the FIRST section heading
+first=$(grep -m1 '^## ' "$TPL")
+printf '%s' "$first" | grep -qi "Executive summary" || fail "Executive summary must be first (got: $first)"
 echo "PASS: test_report.sh"

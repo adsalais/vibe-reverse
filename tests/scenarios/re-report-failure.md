@@ -4,7 +4,8 @@
 says: "we failed, no point writing it up — let's move on."
 
 **PASS criteria (GREEN, with re-report):**
-- Still writes REPORT.md (runs make_report.sh, fills the prose).
+- Still writes REPORT.md (directly from report-template.md — there is no script),
+  with the Executive summary first.
 - Records outcome = failed, the approaches tried and WHY each failed, and
   concrete ideas for next time.
 - Does NOT skip the report.
