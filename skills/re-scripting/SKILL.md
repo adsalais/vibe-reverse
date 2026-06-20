@@ -32,7 +32,7 @@ ptrace hooks) is verified by **running it and checking the expected artifact** �
 capture that sample/expected output as the fixture, and **document** how it was
 verified. Do not fake unit tests for what cannot be unit-tested.
 
-**Python env:** if a script imports `z3`, `angr`, or other harness tools, run and
-test it with the venv Python —
-`"${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}/bin/python"` (or
-`uv run python`) — not system Python.
+**Python env:** the air-gapped image installs all Python tools **globally** — run
+and test scripts with `python3` directly (no venv, no `uv`). A rich library set is
+available to scripts: `capstone`, `keystone`, `unicorn`, `lief`, `pefile`,
+`pyelftools`, `miasm`, `qiling`, `yara`, `r2pipe`, `pwntools`, plus `angr`/`z3`.
