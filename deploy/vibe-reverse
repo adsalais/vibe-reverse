@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+# vibe-reverse — launch the RE harness in the current folder (opencode TUI).
+# Reports/plans are written here, owned by you. `vibe-reverse --print` shows the
+# docker command without running it.
+set -eu
+IMAGE="${VIBE_IMAGE:-vibe-reverse:latest}"
+CFG="${VIBE_CONFIG:-$HOME/.config/vibe-reverse}"
+PRINT=0; [ "${1:-}" = --print ] && { PRINT=1; shift; }
+
+set -- docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "$PWD":/work -w /work \
+  -v "$CFG":/cfg:ro \
+  --tmpfs /state:mode=1777 \
+  -e HOME=/state -e XDG_DATA_HOME=/state -e XDG_CACHE_HOME=/state \
+  -e OPENCODE_CONFIG=/cfg/opencode.json
+# microVM needs /dev/kvm + the kvm group for the mapped (non-root) user
+if [ -e /dev/kvm ]; then
+  set -- "$@" --device /dev/kvm
+  KG=$(getent group kvm 2>/dev/null | cut -d: -f3 || true)
+  [ -n "${KG:-}" ] && set -- "$@" --group-add "$KG"
+fi
+# optional guest images (e.g. windows.qcow2)
+[ -d "$CFG/guests" ] && set -- "$@" -v "$CFG/guests":/guests:ro
+set -- "$@" "$IMAGE"
+
+if [ "$PRINT" = 1 ]; then printf '%s ' "$@"; echo; exit 0; fi
+[ -f "$CFG/opencode.json" ] || { echo "no config at $CFG/opencode.json — run install.sh and edit it" >&2; exit 1; }
+exec "$@"
