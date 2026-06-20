@@ -10,3 +10,6 @@ __pycache__/
 
 # OS noise
 .DS_Store
+
+# compiled test fixtures (rebuilt via tests/fixtures/build.sh)
+tests/fixtures/crackme1
