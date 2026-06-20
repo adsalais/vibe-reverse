@@ -12,9 +12,10 @@ to files; you review a short, self-checked plan at each step.
 - **Design specs:** `docs/superpowers/specs/2026-06-20-reverse-engineering-harness-design.md` (v1),
   `docs/superpowers/specs/2026-06-20-harness-v2-airgap-advanced-re-design.md` (v2)
 - **Install:** see `INSTALL.md`
-- **Status:** v2 in progress — air-gapped harness + advanced capabilities
+- **Status:** v2 — air-gapped harness, **14 skills** built & tested
   (stacked-obfuscation router, devirtualization, anti-analysis, crypto, config/IOC,
-  checkpoint/resume). Whitebox crypto is the next spec.
+  checkpoint/resume). The air-gapped image build (`deploy/build.sh` + `smoke.sh`)
+  runs on a Docker host. Whitebox crypto is the next spec.
 
 ## Quickstart
 1. Install the skills (`INSTALL.md`).

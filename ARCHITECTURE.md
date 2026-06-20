@@ -103,8 +103,8 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 | `re-triage` | Identify the artifact; record scope; route by target family | ✅ built |
 | `re-static` | Decompile & statically analyze; capa/FLOSS scan; route | ✅ built |
 | `re-deobfuscate` | Stacked-layer **router**: inventory → order → peel → re-triage | ✅ built |
-| `re-devirtualize` | VM-based obfuscation (incl. nested/recursive VMs) | ⏳ Plan 4 |
-| `re-antianalysis` | Detect & neutralize anti-debug/anti-VM/anti-disasm | ⏳ Plan 4 |
+| `re-devirtualize` | VM-based obfuscation (incl. nested/recursive VMs) | ✅ built |
+| `re-antianalysis` | Detect & neutralize anti-debug/anti-VM/anti-disasm | ✅ built |
 | `re-crypto` | Identify & replicate crypto (decrypt strings/config/C2) | ✅ built |
 | `re-config` | Config & IOC extraction → IOC list + YARA rule | ✅ built |
 | `re-solve` | Symbolic execution / SMT (angr, z3): keygen, paths, constraints | ✅ built |
@@ -288,11 +288,13 @@ usable on its own.
 3. **Plan 3 — deobfuscate + solve + dynamic** ✅ (re-deobfuscate, re-solve, re-dynamic)
 4. **Plan 4 — reporting + example investigation** ✅ (re-report) — **v1 complete**
 
-**v2 (air-gap + advanced capabilities)** — see
+**v2 (air-gap + advanced capabilities)** ✅ skills built & tested — see
 `docs/superpowers/specs/2026-06-20-harness-v2-airgap-advanced-re-design.md` and the
 four `…-harness-v2-plan*.md` plans: spine refactor (air-gap, remove preflight, new
 session layout, checkpoint/resume) → tooling/Docker → deob-router + crypto + config
-→ devirtualization + anti-analysis. Family **10 → 14** skills.
+→ devirtualization + anti-analysis. Family **10 → 14** skills. (The air-gapped image
+build + smoke run on a Docker host.) Roadmap: whitebox crypto (own spec), `re-diff`,
+firmware/managed/wasm packs.
 
 ---
 

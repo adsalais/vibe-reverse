@@ -50,9 +50,9 @@ ok "vibe user + setpriv"
 
 # all skills baked
 n=$(ls -1d /opt/vibe-reverse/skills/*/ 2>/dev/null | wc -l)
-[ "$n" -eq 12 ] || fail "expected 12 skills, found $n"
+[ "$n" -eq 14 ] || fail "expected 14 skills, found $n"
 [ -f /opt/vibe-reverse/skills/reverse-engineering/SKILL.md ] || fail "orchestrator skill missing"
-ok "12 skills baked"
+ok "14 skills baked"
 
 # CA: if a real cert was baked, it must be in the trust store
 if [ -s /usr/local/share/ca-certificates/internal-ca.crt ]; then
