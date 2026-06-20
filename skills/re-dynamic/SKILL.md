@@ -14,6 +14,19 @@ a container (`--network none`), a throwaway VM, or a restricted user. **Never ru
 an untrusted target on the host.** Record the sandbox used in `00-target.md`.
 *Violating the letter of this rule is violating its spirit.*
 
+## Sandbox: microVM when available
+
+In the `vibe-reverse` container, detonate via the **microVM** (separate kernel,
+no network device at all):
+
+```sh
+vmrun.sh <sample> <investigation-dir> --mode trace|gdb-script|gdb-server [--timeout N]
+```
+
+Results land in `artifacts/dynamic/`. If `vmrun.sh` is not present (running the
+skills outside the container), fall back to `dynamic_trace.sh` **inside an external
+sandbox** — the consent + isolation rule above still applies.
+
 ## Trace it (inside the sandbox)
 
 ```sh
