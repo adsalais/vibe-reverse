@@ -50,6 +50,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends xz-utils \
  && chmod +x /opt/dl/upx \
  && rm -rf /tmp/upx.tar.xz /tmp/upx-*
 
+# ---- Linux detonation guest (kernel + initrd + rootfs.ext4) ----
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      mmdebstrap fakechroot fakeroot e2fsprogs linux-image-amd64 \
+    && rm -rf /var/lib/apt/lists/*
+COPY deploy/guest/linux/detonate /tmp/detonate
+COPY deploy/guest/linux/build-rootfs.sh /tmp/build-rootfs.sh
+RUN set -eu; \
+    KVER=$(basename /lib/modules/*); \
+    mkdir -p /opt/vibe-reverse/guest; \
+    cp /boot/vmlinuz-"$KVER"    /opt/vibe-reverse/guest/vmlinuz; \
+    cp /boot/initrd.img-"$KVER" /opt/vibe-reverse/guest/initrd.img; \
+    sh /tmp/build-rootfs.sh "$KVER" /opt/vibe-reverse/guest/rootfs.ext4
+
 # ----------------------------- runtime -----------------------------
 FROM python:3.12-slim-bookworm AS runtime
 # radare2 (.deb) + upx (static) staged from the builder (not in Debian main)
@@ -66,6 +79,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /opt/vibe-reverse/venv            /opt/vibe-reverse/venv
 COPY --from=builder /opt/ghidra                       /opt/ghidra
 COPY --from=builder /opt/vibe-reverse/bin/opencode    /opt/vibe-reverse/bin/opencode
+COPY --from=builder /opt/vibe-reverse/guest           /opt/vibe-reverse/guest
+COPY deploy/vmrun.sh                                  /opt/vibe-reverse/bin/vmrun.sh
+RUN chmod +x /opt/vibe-reverse/bin/vmrun.sh
 
 # the 10 skills + scripts
 COPY skills/              /opt/vibe-reverse/skills/

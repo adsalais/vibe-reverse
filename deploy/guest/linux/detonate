@@ -1,0 +1,41 @@
+#!/usr/bin/dash
+# detonate — guest init (PID 1). Shebang uses the real dash path (not /bin/sh,
+# which is a usrmerge symlink that run-init may not resolve at exec time). One shot: instrument the sample, dump results, power off.
+# NEVER networked (vmrun gives the VM -nic none). Reads mode/timeout from /proc/cmdline.
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+mount -t proc proc /proc 2>/dev/null
+mount -t sysfs sys /sys 2>/dev/null
+mount -t devtmpfs dev /dev 2>/dev/null
+
+# virtio-9p (modules ship in the rootfs /lib/modules)
+modprobe 9pnet_virtio 2>/dev/null; modprobe 9p 2>/dev/null
+mkdir -p /in /out
+mount -t 9p -o trans=virtio,version=9p2000.L,ro invibe  /in  2>/dev/null
+mount -t 9p -o trans=virtio,version=9p2000.L    outvibe /out 2>/dev/null
+
+# parse kernel cmdline: mode=... timeout=...
+MODE=trace; TIMEOUT=60
+for tok in $(cat /proc/cmdline); do
+  case "$tok" in mode=*) MODE=${tok#mode=};; timeout=*) TIMEOUT=${tok#timeout=};; esac
+done
+
+S=/in/sample
+chmod +x "$S" 2>/dev/null
+echo "== detonate mode=$MODE timeout=$TIMEOUT ==" > /out/run.log
+case "$MODE" in
+  trace)
+    ( strace -f -tt -o /out/strace.txt timeout "$TIMEOUT" "$S" >>/out/run.log 2>&1 ) 2>/dev/null || true
+    ( ltrace -f -o /out/ltrace.txt timeout "$TIMEOUT" "$S" >/dev/null 2>&1 ) 2>/dev/null || true
+    ;;
+  gdb-script)
+    timeout "$TIMEOUT" gdb -batch -nx -x /in/cmds.gdb "$S" >/out/gdb.txt 2>&1 || true
+    ;;
+  gdb-server)
+    timeout "$TIMEOUT" gdbserver /dev/ttyS1 "$S" >/out/gdbserver.log 2>&1 || true
+    ;;
+esac
+sync
+# reliable poweroff in a minimal init (plain PID1 exit would panic the kernel)
+echo o > /proc/sysrq-trigger 2>/dev/null
+poweroff -f 2>/dev/null
+sleep 10

@@ -42,4 +42,11 @@ else
   ok "no internal CA (placeholder) — skipped"
 fi
 
+# microVM guest + driver
+for f in vmlinuz initrd.img rootfs.ext4; do
+  [ -s "/opt/vibe-reverse/guest/$f" ] || fail "guest $f missing"
+done
+[ -x /opt/vibe-reverse/bin/vmrun.sh ] || fail "vmrun.sh missing"
+ok "microVM guest + vmrun.sh"
+
 echo "PASS: smoke.sh"
