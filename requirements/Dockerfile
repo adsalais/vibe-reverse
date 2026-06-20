@@ -10,7 +10,9 @@ FROM python:3.12-slim-trixie
 RUN apt-get update && apt-get install -y --no-install-recommends \
         file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd yara \
         build-essential \
-        ca-certificates curl git unzip \
+        zip unzip p7zip-full unar cabextract xz-utils zstd lz4 lzip libarchive-tools cpio \
+        ssdeep openssl jq ripgrep poppler-utils libimage-exiftool-perl less tree \
+        ca-certificates curl git \
     && rm -rf /var/lib/apt/lists/*
 
 # capa / FLOSS / Detect-It-Easy are not pip packages; for this dev image, fetch the

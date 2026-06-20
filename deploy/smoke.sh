@@ -39,6 +39,13 @@ python3 -c 'import pwn, triton' \
   || fail "global python cannot import pwn/triton"
 ok "advanced-RE python libs"
 
+# general utilities (archives + analysis helpers) + maldoc tooling
+for t in 7z zip unzip unar cabextract ssdeep openssl jq rg exiftool less tree olevba; do
+  command -v "$t" >/dev/null 2>&1 || fail "$t missing from PATH"
+done
+python3 -c 'import oletools' || fail "global python cannot import oletools"
+ok "general utilities + oletools"
+
 # QEMU present
 command -v qemu-system-x86_64 >/dev/null 2>&1 || fail "qemu-system-x86_64 missing"
 ok "qemu"

@@ -32,6 +32,9 @@ qiling>=1.4.6
 # irreconcilably with qiling's unicorn>=2.0.1. Windows malware is handled by the
 # no-network Windows microVM guest (vmrun.sh --guest windows), not in-container.
 
+# maldoc analysis: Office/RTF macros & OLE (olevba, oleid, rtfobj)
+oletools
+
 # Triton (Quarkslab) — taint + symbolic DBA for devirtualization.
 # If no platform wheel installs cleanly, build it in the Dockerfile builder stage
 # instead (see deploy/Dockerfile) and drop this line.

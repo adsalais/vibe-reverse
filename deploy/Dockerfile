@@ -81,6 +81,8 @@ COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
       file binutils binwalk gdb ltrace strace xxd yara \
       build-essential \
+      zip unzip p7zip-full unar cabextract xz-utils zstd lz4 lzip libarchive-tools cpio \
+      ssdeep openssl jq ripgrep poppler-utils libimage-exiftool-perl less tree \
       qemu-system-x86 qemu-utils xorriso dosfstools mtools \
       ca-certificates openjdk-21-jdk passwd util-linux \
       /opt/dl/radare2.deb /opt/dl/die.deb \
@@ -94,7 +96,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements/python-tools.txt /tmp/python-tools.txt
 RUN pip install --no-cache-dir -r /tmp/python-tools.txt \
  && python -c 'import angr, z3, capstone, unicorn, keystone, lief, pefile, elftools, miasm, qiling, yara, r2pipe' \
- && python -c 'import pwn' \
+ && python -c 'import pwn, oletools' \
  && python -c 'import triton' \
  && rm -f /tmp/python-tools.txt
 

@@ -19,5 +19,20 @@
 | `qiling` (python) | full-system-lite emulation: unpack, config-extract without detonating |
 | `lief`, `pefile`, `pyelftools` (python) | parse/modify PE/ELF/Mach-O |
 
+**General utilities (also pre-installed):**
+
+| Tool | Use it for |
+|---|---|
+| `7z`, `unzip`, `zip`, `unar`, `cabextract`, `bsdtar` (libarchive-tools) | extract/repack archives (incl. password-protected, RAR, CAB) |
+| `xz`, `zstd`, `lz4`, `lzip`, `cpio` | (de)compress common container formats |
+| `ssdeep` | fuzzy hashing — malware similarity / variant clustering |
+| `openssl` | hashing, base64, decrypt, cert/key parsing (pairs with `re-crypto`) |
+| `jq` | query/transform JSON (e.g. `config.json` / IOC output) |
+| `rg` (ripgrep) | fast search across decompiled output / strings / artifacts |
+| `pdftotext`, `pdfinfo` (poppler-utils) | PDF maldoc triage |
+| `exiftool` | metadata from documents / images |
+| `olevba`, `oleid`, `rtfobj` (oletools) | Office / RTF macro & OLE maldoc analysis |
+| `less`, `tree` | page output / view the investigation tree |
+
 You are on an air-gapped network: every tool above is already installed. Never try
 to install anything. If a tool seems missing, it is a PATH/usage issue.
