@@ -1,30 +1,25 @@
 #!/usr/bin/env sh
 # vibe-reverse — launch the RE harness in the current folder (opencode TUI).
-# Reports/plans are written here, owned by you. `vibe-reverse --print` shows the
-# docker command without running it.
+# Reports/plans are written here, owned by you: the container's entrypoint remaps
+# its baked 'vibe' user onto your uid/gid (HOST_UID/HOST_GID) and drops to it.
+# `vibe-reverse --print` shows the docker command without running it.
 set -eu
 IMAGE="${VIBE_IMAGE:-vibe-reverse:latest}"
 CFG="${VIBE_CONFIG:-$HOME/.config/vibe-reverse}"
 PRINT=0; [ "${1:-}" = --print ] && { PRINT=1; shift; }
 
 set -- docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
+  -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
   -v "$PWD":/work -w /work \
   -v "$CFG":/cfg:ro \
-  --tmpfs /state:mode=1777 \
-  -e HOME=/state -e XDG_DATA_HOME=/state -e XDG_CACHE_HOME=/state \
   -e OPENCODE_CONFIG=/cfg/opencode.json
-# microVM needs /dev/kvm + the kvm group for the mapped (non-root) user
-if [ -e /dev/kvm ]; then
-  set -- "$@" --device /dev/kvm
-  KG=$(getent group kvm 2>/dev/null | cut -d: -f3 || true)
-  [ -n "${KG:-}" ] && set -- "$@" --group-add "$KG"
-fi
+# microVM needs /dev/kvm; the entrypoint adds the dropped user to the device's group
+[ -e /dev/kvm ] && set -- "$@" --device /dev/kvm
 # optional guest images (e.g. windows.qcow2)
 [ -d "$CFG/guests" ] && set -- "$@" -v "$CFG/guests":/guests:ro
-# opencode TUI keybinds: map tui.json into opencode's config dir (per `opencode
-# debug paths`, config resolves to /state/.config/opencode with HOME=/state).
-[ -f "$CFG/tui.json" ] && set -- "$@" -v "$CFG/tui.json":/state/.config/opencode/tui.json:ro
+# opencode TUI keybinds: map tui.json into opencode's config dir (HOME=/home/vibe,
+# so config resolves to /home/vibe/.config/opencode).
+[ -f "$CFG/tui.json" ] && set -- "$@" -v "$CFG/tui.json":/home/vibe/.config/opencode/tui.json:ro
 set -- "$@" "$IMAGE"
 
 if [ "$PRINT" = 1 ]; then printf '%s ' "$@"; echo; exit 0; fi
