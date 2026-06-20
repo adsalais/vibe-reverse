@@ -40,6 +40,23 @@ sh dynamic_trace.sh <target> <investigation-dir> [args...]
 Uses strace → ltrace → gdb; writes the trace to `artifacts/`. Use it to confirm
 behavior, find the comparison, read runtime values, or set breakpoints.
 
+## Emulate it (unpack / extract without full detonation)
+
+Emulation runs the sample's code inside an emulator with only the resources you
+grant — useful to self-decrypt strings, drop a config you can dump, or run-to-unpack
+a custom packer. It is still running code: keep it **no-network** and treat it under
+the same consent rule. Prefer it to native detonation when it suffices.
+
+- Linux/Windows user-mode: adapt `templates/qiling_emulate.py` via **`re-scripting`**
+  (set the rootfs + per-sample hooks). Windows user-mode malware can also use
+  `speakeasy`.
+- Emulation can be slow — apply `../reverse-engineering/references/long-running-ops.md`
+  (background + budget + **ask before killing**).
+- Dumps land in `artifacts/dynamic/`; feed recovered config to `re-config`.
+
+Native detonation (real execution) still goes ONLY to the no-network microVM
+(`vmrun.sh`), never the container/host.
+
 ## Red flags — STOP
 
 | Thought | Reality |
