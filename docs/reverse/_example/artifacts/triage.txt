@@ -1,0 +1,31 @@
+== triage ==
+file:     tests/fixtures/crackme1
+type:     ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=ed57902a24181b7e7ec4f145dc5f22a3dbff9c9a, for GNU/Linux 3.2.0, not stripped
+size:     16136 bytes
+sha256:   4d14084284560339cf6a05b90aa048467fc1fd1c381e1b51033edb408c0ef9eb
+entropy:  1.79 / 8.0 (high >7.0 suggests packing/encryption)
+packer:   none detected
+elf prot: PIE, NX-on, RELRO, canary
+family:   native
+
+== top strings (len>=6) ==
+      2 __gmon_start__
+      2 _ITM_registerTMCloneTable
+      2 _ITM_deregisterTMCloneTable
+      1 usage: %s <user> <key>
+      1 strlen@GLIBC_2.2.5
+      1 strlen
+      1 strcmp@GLIBC_2.2.5
+      1 strcmp
+      1 puts@GLIBC_2.2.5
+      1 printf@GLIBC_2.2.5
+      1 printf
+      1 libc.so.6
+      1 frame_dummy
+      1 deregister_tm_clones
+      1 crtstuff.c
+      1 crackme1.c
+      1 completed.0
+      1 _edata
+      1 __stack_chk_fail@GLIBC_2.4
+      1 __stack_chk_fail

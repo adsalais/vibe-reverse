@@ -1,0 +1,93 @@
+00000000000011c9 <main>:
+    11c9:	f3 0f 1e fa          	endbr64
+    11cd:	55                   	push   %rbp
+    11ce:	48 89 e5             	mov    %rsp,%rbp
+    11d1:	48 83 ec 70          	sub    $0x70,%rsp
+    11d5:	89 7d 9c             	mov    %edi,-0x64(%rbp)
+    11d8:	48 89 75 90          	mov    %rsi,-0x70(%rbp)
+    11dc:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+    11e3:	00 00 
+    11e5:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+    11e9:	31 c0                	xor    %eax,%eax
+    11eb:	83 7d 9c 02          	cmpl   $0x2,-0x64(%rbp)
+    11ef:	7f 28                	jg     1219 <main+0x50>
+    11f1:	48 8b 45 90          	mov    -0x70(%rbp),%rax
+    11f5:	48 8b 00             	mov    (%rax),%rax
+    11f8:	48 8d 15 05 0e 00 00 	lea    0xe05(%rip),%rdx        # 2004 <_IO_stdin_used+0x4>
+    11ff:	48 89 c6             	mov    %rax,%rsi
+    1202:	48 89 d7             	mov    %rdx,%rdi
+    1205:	b8 00 00 00 00       	mov    $0x0,%eax
+    120a:	e8 b1 fe ff ff       	call   10c0 <printf@plt>
+    120f:	b8 02 00 00 00       	mov    $0x2,%eax
+    1214:	e9 ee 00 00 00       	jmp    1307 <main+0x13e>
+    1219:	48 c7 45 b0 00 00 00 	movq   $0x0,-0x50(%rbp)
+    1220:	00 
+    1221:	48 c7 45 b8 00 00 00 	movq   $0x0,-0x48(%rbp)
+    1228:	00 
+    1229:	48 c7 45 c0 00 00 00 	movq   $0x0,-0x40(%rbp)
+    1230:	00 
+    1231:	48 c7 45 c8 00 00 00 	movq   $0x0,-0x38(%rbp)
+    1238:	00 
+    1239:	48 c7 45 d0 00 00 00 	movq   $0x0,-0x30(%rbp)
+    1240:	00 
+    1241:	48 c7 45 d8 00 00 00 	movq   $0x0,-0x28(%rbp)
+    1248:	00 
+    1249:	48 c7 45 e0 00 00 00 	movq   $0x0,-0x20(%rbp)
+    1250:	00 
+    1251:	48 c7 45 e8 00 00 00 	movq   $0x0,-0x18(%rbp)
+    1258:	00 
+    1259:	48 8b 45 90          	mov    -0x70(%rbp),%rax
+    125d:	48 83 c0 08          	add    $0x8,%rax
+    1261:	48 8b 00             	mov    (%rax),%rax
+    1264:	48 89 c7             	mov    %rax,%rdi
+    1267:	e8 34 fe ff ff       	call   10a0 <strlen@plt>
+    126c:	48 89 45 a0          	mov    %rax,-0x60(%rbp)
+    1270:	48 83 7d a0 3f       	cmpq   $0x3f,-0x60(%rbp)
+    1275:	76 08                	jbe    127f <main+0xb6>
+    1277:	48 c7 45 a0 3f 00 00 	movq   $0x3f,-0x60(%rbp)
+    127e:	00 
+    127f:	48 c7 45 a8 00 00 00 	movq   $0x0,-0x58(%rbp)
+    1286:	00 
+    1287:	eb 2c                	jmp    12b5 <main+0xec>
+    1289:	48 8b 45 90          	mov    -0x70(%rbp),%rax
+    128d:	48 83 c0 08          	add    $0x8,%rax
+    1291:	48 8b 10             	mov    (%rax),%rdx
+    1294:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
+    1298:	48 01 d0             	add    %rdx,%rax
+    129b:	0f b6 00             	movzbl (%rax),%eax
+    129e:	83 c0 01             	add    $0x1,%eax
+    12a1:	89 c1                	mov    %eax,%ecx
+    12a3:	48 8d 55 b0          	lea    -0x50(%rbp),%rdx
+    12a7:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
+    12ab:	48 01 d0             	add    %rdx,%rax
+    12ae:	88 08                	mov    %cl,(%rax)
+    12b0:	48 83 45 a8 01       	addq   $0x1,-0x58(%rbp)
+    12b5:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
+    12b9:	48 3b 45 a0          	cmp    -0x60(%rbp),%rax
+    12bd:	72 ca                	jb     1289 <main+0xc0>
+    12bf:	48 8b 45 90          	mov    -0x70(%rbp),%rax
+    12c3:	48 83 c0 10          	add    $0x10,%rax
+    12c7:	48 8b 10             	mov    (%rax),%rdx
+    12ca:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+    12ce:	48 89 d6             	mov    %rdx,%rsi
+    12d1:	48 89 c7             	mov    %rax,%rdi
+    12d4:	e8 f7 fd ff ff       	call   10d0 <strcmp@plt>
+    12d9:	85 c0                	test   %eax,%eax
+    12db:	75 16                	jne    12f3 <main+0x12a>
+    12dd:	48 8d 05 38 0d 00 00 	lea    0xd38(%rip),%rax        # 201c <_IO_stdin_used+0x1c>
+    12e4:	48 89 c7             	mov    %rax,%rdi
+    12e7:	e8 a4 fd ff ff       	call   1090 <puts@plt>
+    12ec:	b8 00 00 00 00       	mov    $0x0,%eax
+    12f1:	eb 14                	jmp    1307 <main+0x13e>
+    12f3:	48 8d 05 2b 0d 00 00 	lea    0xd2b(%rip),%rax        # 2025 <_IO_stdin_used+0x25>
+    12fa:	48 89 c7             	mov    %rax,%rdi
+    12fd:	e8 8e fd ff ff       	call   1090 <puts@plt>
+    1302:	b8 01 00 00 00       	mov    $0x1,%eax
+    1307:	48 8b 55 f8          	mov    -0x8(%rbp),%rdx
+    130b:	64 48 2b 14 25 28 00 	sub    %fs:0x28,%rdx
+    1312:	00 00 
+    1314:	74 05                	je     131b <main+0x152>
+    1316:	e8 95 fd ff ff       	call   10b0 <__stack_chk_fail@plt>
+    131b:	c9                   	leave
+    131c:	c3                   	ret
+
