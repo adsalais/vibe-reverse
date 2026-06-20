@@ -1,0 +1,12 @@
+# Runtime investigations may hold sensitive target data — never commit them,
+# except a curated example added later (Plan 4).
+docs/reverse/*
+!docs/reverse/_example/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS noise
+.DS_Store
