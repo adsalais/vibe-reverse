@@ -9,7 +9,7 @@ DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 VENV="${RE_HARNESS_VENV:-$HOME/.local/share/re-harness/venv}"
 
 echo "==> system tools"
-SYS_APT="file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd"
+SYS_APT="file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd yara"
 SYS_BREW="binutils binwalk radare2 gdb upx"   # macOS: ltrace/strace/xxd differ or are built-in
 if command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update && sudo apt-get install -y $SYS_APT
@@ -31,6 +31,13 @@ cat <<'GHIDRA'
   2) download:           https://github.com/NationalSecurityAgency/ghidra/releases
   3) unzip and add ghidra_*/support to PATH (provides analyzeHeadless)
 GHIDRA
+
+cat <<'STANDALONE'
+==> standalone tools (not pip; fetch manually if you want them on a host)
+  capa  : https://github.com/mandiant/capa/releases       (standalone linux zip)
+  FLOSS : https://github.com/mandiant/flare-floss/releases (standalone linux zip)
+  DIE   : https://github.com/horsicq/DIE-engine/releases   (diec CLI)
+STANDALONE
 
 cat <<EOF
 

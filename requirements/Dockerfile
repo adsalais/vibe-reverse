@@ -7,9 +7,12 @@ FROM python:3.12-slim-trixie
 
 # 1) system tools (Debian trixie apt)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd \
-        ca-certificates curl git \
+        file binutils binwalk radare2 gdb ltrace strace upx-ucl xxd yara \
+        ca-certificates curl git unzip \
     && rm -rf /var/lib/apt/lists/*
+
+# capa / FLOSS / Detect-It-Easy are not pip packages; for this dev image, fetch the
+# standalone release binaries manually if needed (the air-gapped deploy/ image bakes them).
 
 # 2) python tools, installed GLOBALLY; the build fails if anything is missing
 COPY requirements/python-tools.txt /tmp/python-tools.txt
