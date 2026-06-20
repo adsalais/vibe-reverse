@@ -112,10 +112,18 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
   validated on 3.12, so we pin 3.12 rather than trixie's system 3.13).
 - `radare2` + `upx` are **not** in Debian → installed from pinned GitHub
   releases. Pin **`angr==9.2.221`** (z3 arrives via angr).
+- **capa + FLOSS** are baked as **standalone Linux binaries** (staged in the builder,
+  `install`-ed to `/usr/local/bin`) — never pip, to keep vivisect out of angr's
+  resolution. **Detect-It-Easy** ships as a Debian `.deb` (`diec` CLI), installed
+  like `radare2.deb`. **`yara`** is from apt. The rest (capstone/keystone/unicorn/
+  lief/pefile/pyelftools/miasm/qiling/pwntools/speakeasy/triton) install globally
+  via `python-tools.txt`. **Triton** is the integration risk: prefer the
+  `triton-library` wheel; fall back to a builder-stage source build if no wheel
+  resolves. The build's `python -c 'import …'` check is the gate.
 - Python tools install **globally** (`pip install`, no venv/uv — the python
   image's pip is not PEP-668 managed). The skills call `python3` directly (the v2
   refactor dropped the old `RE_HARNESS_VENV` fallback). The build runs
-  `python -c 'import angr, z3'` so a broken install fails the build.
+  `python -c 'import angr, z3, …'` so a broken install fails the build.
 - **Never run `opencode` at build time** (it opens a TUI and hangs). The env vars
   `OPENCODE_DISABLE_MODELS_FETCH=1` + `OPENCODE_DISABLE_AUTOUPDATE=1` stop phone-home.
 - **Ghidra 12.x** needs **JDK 21** — now Debian trixie's apt `openjdk-21-jdk` (a
