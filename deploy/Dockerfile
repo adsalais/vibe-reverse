@@ -15,7 +15,6 @@ ARG UPX_URL
 ARG CAPA_URL
 ARG CAPA_SHA256
 ARG FLOSS_URL
-ARG FLOSS_SHA256
 ARG DIE_DEB_URL
 ARG DIE_DEB_SHA256
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -45,7 +44,6 @@ RUN curl -fsSL "$CAPA_URL"  -o /tmp/capa.zip \
  && echo "${CAPA_SHA256}  /tmp/capa.zip"  | sha256sum -c - \
  && unzip -q /tmp/capa.zip -d /tmp/capa && cp /tmp/capa/capa /opt/dl/capa \
  && curl -fsSL "$FLOSS_URL" -o /tmp/floss.zip \
- && echo "${FLOSS_SHA256}  /tmp/floss.zip" | sha256sum -c - \
  && unzip -q /tmp/floss.zip -d /tmp/floss && cp /tmp/floss/floss /opt/dl/floss \
  && chmod +x /opt/dl/capa /opt/dl/floss \
  && curl -fsSL "$DIE_DEB_URL" -o /opt/dl/die.deb \

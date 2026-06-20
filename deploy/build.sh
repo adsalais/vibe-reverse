@@ -19,12 +19,14 @@ GHIDRA_SHA256="${GHIDRA_SHA256:?set GHIDRA_SHA256 to the sha256 of the Ghidra zi
 RADARE2_DEB_URL="${RADARE2_DEB_URL:-https://github.com/radareorg/radare2/releases/download/6.1.6/radare2_6.1.6_amd64.deb}"
 UPX_URL="${UPX_URL:-https://github.com/upx/upx/releases/download/v5.2.0/upx-5.2.0-amd64_linux.tar.xz}"
 # capa + FLOSS standalone Linux releases (set the matching sha256 from the release page):
-CAPA_URL="${CAPA_URL:-https://github.com/mandiant/capa/releases/download/v9.2.1/capa-v9.2.1-linux.zip}"
+CAPA_URL="${CAPA_URL:-https://github.com/mandiant/capa/releases/download/v9.4.0/capa-v9.4.0-linux.zip}"
+CAPA_SHA256="07800a1d20a21eb18fc98716e2ae81b668e0c9a04defd588c8aa17ea3d3281e4"
 CAPA_SHA256="${CAPA_SHA256:?set CAPA_SHA256 to the sha256 of the capa linux zip}"
 FLOSS_URL="${FLOSS_URL:-https://github.com/mandiant/flare-floss/releases/download/v3.1.1/floss-v3.1.1-linux.zip}"
-FLOSS_SHA256="${FLOSS_SHA256:?set FLOSS_SHA256 to the sha256 of the floss linux zip}"
+# FLOSS release publishes no sha256 — fetched over HTTPS without an integrity pin.
 # Detect-It-Easy .deb for Debian (diec CLI):
-DIE_DEB_URL="${DIE_DEB_URL:-https://github.com/horsicq/DIE-engine/releases/download/3.10/die_3.10_amd64_Debian_13.deb}"
+DIE_DEB_URL="${DIE_DEB_URL:-https://github.com/horsicq/DIE-engine/releases/download/3.21/die_3.21_Debian_13_amd64.deb}"
+DIE_DEB_SHA256="47ed1299fe0fcdf3549e4077573db9651c228144b22a372729eb014548332fcd"
 DIE_DEB_SHA256="${DIE_DEB_SHA256:?set DIE_DEB_SHA256 to the sha256 of the DIE .deb}"
 # Java for Ghidra 12.x (JDK 21) now comes from Debian trixie apt (openjdk-21-jdk)
 # inside the Dockerfile — no staged JDK tarball, so no JDK build args are needed.
@@ -44,7 +46,6 @@ docker build -t vibe-reverse:latest -f deploy/Dockerfile \
   --build-arg CAPA_URL="$CAPA_URL" \
   --build-arg CAPA_SHA256="$CAPA_SHA256" \
   --build-arg FLOSS_URL="$FLOSS_URL" \
-  --build-arg FLOSS_SHA256="$FLOSS_SHA256" \
   --build-arg DIE_DEB_URL="$DIE_DEB_URL" \
   --build-arg DIE_DEB_SHA256="$DIE_DEB_SHA256" \
   .
