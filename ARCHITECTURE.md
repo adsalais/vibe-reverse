@@ -100,8 +100,8 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 
 | Skill | Role | Status |
 |---|---|---|
-| `re-triage` | Identify the artifact; record scope; route by target family | ⏳ Plan 2 |
-| `re-static` | Decompile & statically analyze; judge obfuscation / solver need | ⏳ Plan 2 |
+| `re-triage` | Identify the artifact; record scope; route by target family | ✅ built |
+| `re-static` | Decompile & statically analyze; judge obfuscation / solver need | ✅ built |
 | `re-deobfuscate` | Packers, nested layers, string / control-flow deobfuscation | ⏳ Plan 3 |
 | `re-solve` | Symbolic execution / SMT (angr, z3): keygen, paths, constraints | ⏳ Plan 3 |
 | `re-dynamic` | Run/trace under gdb/ltrace/strace — **sandbox only** | ⏳ Plan 3 |
@@ -267,7 +267,7 @@ Two kinds of test:
 usable on its own.
 
 1. **Plan 1 — spine & packaging** ✅ (orchestrator, preflight, planning+gate, scripting)
-2. **Plan 2 — triage + static** ⏳
+2. **Plan 2 — triage + static** ✅ (re-triage, re-static)
 3. **Plan 3 — deobfuscate + solve + dynamic** ⏳
 4. **Plan 4 — reporting + example investigation** ⏳
 
