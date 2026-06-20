@@ -15,7 +15,7 @@ OPENCODE_VERSION="${OPENCODE_VERSION:-1.17.8}"   # must be >= 1.0.154 for the of
 GHIDRA_URL="${GHIDRA_URL:-https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.2_build/ghidra_12.1.2_PUBLIC_20260605.zip}"
 GHIDRA_SHA256="b62e81a0390618466c019c60d8c2f796ced2509c4c1aea4a37644a77272cf99d"
 GHIDRA_SHA256="${GHIDRA_SHA256:?set GHIDRA_SHA256 to the sha256 of the Ghidra zip (see releases page)}"
-# radare2 + upx are not in Debian bookworm — fetch official releases:
+# radare2 + upx are not in Debian trixie — fetch official releases:
 RADARE2_DEB_URL="${RADARE2_DEB_URL:-https://github.com/radareorg/radare2/releases/download/6.1.6/radare2_6.1.6_amd64.deb}"
 UPX_URL="${UPX_URL:-https://github.com/upx/upx/releases/download/v5.2.0/upx-5.2.0-amd64_linux.tar.xz}"
 # capa + FLOSS standalone Linux releases (set the matching sha256 from the release page):
