@@ -13,6 +13,11 @@ Delegate when the work is mechanical, bounded, and single-purpose:
   decompiled C, the relevant calls out of a long strace, the hits out of a capa/FLOSS dump.
 - **Apply a deterministic transform** — decode/transform a blob with a *known* routine.
 - **Run a tested script** and return its output.
+- **Implement a written plan whose tests define "done"** (the `re-coding` flow) — hand the
+  subagent the plan + the unit tests; it implements until the test command is green. This
+  is bounded *because the tests are the spec*: the subagent does **not** design or choose
+  the approach, and it returns **BLOCKED** (with what it tried) after a few failed
+  iterations rather than churning. You wrote the plan/tests; you code-review the result.
 
 Do NOT delegate judgment: deciding the approach, "figure out how to deobfuscate this",
 choosing the next phase, or anything that needs trying several things. That stays with
