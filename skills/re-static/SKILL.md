@@ -11,6 +11,7 @@ Static analysis only — **never run the target.**
 Reading a large decompiled artifact to extract specific functions is **mechanical** —
 delegate it per `../reverse-engineering/references/delegating-to-subagents.md` (the
 subagent returns the function + evidence pointers; you integrate the findings).
+The assess/route options are candidate hypotheses for the `re-planning` loop — it ranks and gates.
 
 ## Run it
 

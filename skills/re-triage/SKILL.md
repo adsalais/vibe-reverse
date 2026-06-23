@@ -10,6 +10,7 @@ Triage is the **first look**. It is **static and safe — never execute the targ
 **Method, interpretation, failure modes, worked example:** `references/triage-playbook.md`.
 Heavy-artifact reads (rare in triage — its output is small) delegate mechanically — see
 `../reverse-engineering/references/delegating-to-subagents.md`.
+The family routes below are candidate hypotheses for the `re-planning` loop — it ranks and gates.
 
 ## Run it
 

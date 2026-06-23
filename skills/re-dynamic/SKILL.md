@@ -11,6 +11,7 @@ description: Use when reverse engineering requires running or tracing the target
 Reading a long trace to extract the relevant calls is **mechanical** — delegate it per
 `../reverse-engineering/references/delegating-to-subagents.md`; never delegate the decision
 to run.
+The technique/route you pick is a candidate hypothesis for the `re-planning` loop — it ranks and gates.
 
 ## Core rule
 
