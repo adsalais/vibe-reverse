@@ -79,7 +79,7 @@ FROM python:3.12-slim-trixie AS runtime
 # AND its default jitter compiles C at runtime — so the compiler stays in the image.
 COPY --from=builder /opt/dl /opt/dl
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      file binutils binwalk gdb ltrace strace xxd yara \
+      file binutils binwalk gdb ltrace strace xxd yara rustc \
       build-essential \
       zip unzip p7zip-full unar cabextract xz-utils zstd lz4 lzip libarchive-tools cpio \
       ssdeep openssl jq ripgrep poppler-utils libimage-exiftool-perl less tree \
@@ -90,6 +90,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && install -Dm755 /opt/dl/capa  /usr/local/bin/capa \
  && install -Dm755 /opt/dl/floss /usr/local/bin/floss \
  && test -x /usr/lib/jvm/java-21-openjdk-amd64/bin/java \
+ && rustc --version \
  && rm -rf /var/lib/apt/lists/* /opt/dl
 
 # python tools, installed GLOBALLY (no venv, no extra resolver). Verified at build.

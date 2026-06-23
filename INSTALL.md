@@ -49,3 +49,6 @@ the agent never installs anything). To provide them yourself, see **`requirement
 - or `requirements/Dockerfile` — a container with everything preinstalled.
 - the air-gapped appliance is `deploy/` (`sh deploy/build.sh`), which bakes every
   tool the skills call.
+
+`rustc` is baked in for `re-coding`'s Rust path (std-only; no `cargo`/crates needed on
+the air-gapped image).

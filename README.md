@@ -16,6 +16,8 @@ to files; you review a short, self-checked plan at each step.
   (stacked-obfuscation router, devirtualization, anti-analysis, crypto, config/IOC,
   checkpoint/resume). The air-gapped image build (`deploy/build.sh` + `smoke.sh`)
   runs on a Docker host. Whitebox crypto is the next spec.
+- **Languages:** `re-coding` writes Python/shell, or **Rust** (`rustc`, std-only — no
+  crates needed) for self-contained, dependency-free heavy-logic tasks.
 
 ## Quickstart
 1. Install the skills (`INSTALL.md`).
