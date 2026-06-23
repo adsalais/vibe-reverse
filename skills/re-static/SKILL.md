@@ -7,6 +7,11 @@ description: Use after triage on a native binary to statically analyze it — di
 
 Static analysis only — **never run the target.**
 
+**Method, where to start, failure modes, worked example:** `references/static-playbook.md`.
+Reading a large decompiled artifact to extract specific functions is **mechanical** —
+delegate it per `../reverse-engineering/references/delegating-to-subagents.md` (the
+subagent returns the function + evidence pointers; you integrate the findings).
+
 ## Run it
 
 ```sh
