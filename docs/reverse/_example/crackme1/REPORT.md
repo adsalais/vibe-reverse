@@ -6,10 +6,10 @@
 - **Outcome / verdict:** solved — the key for any username is recoverable in O(n).
 - **What it is:** ELF 64-bit PIE x86-64 CTF crackme; a `<user> <key>` check, not packed.
 - **Top findings (3–5):**
-  1. The check is `want[i] = username[i] + 1` then `strcmp(want, key)` — a pure,
-     invertible byte transform.
-  2. No packing/obfuscation (entropy 1.79); standard hardening (PIE/NX/RELRO/canary).
-  3. Keygen `key[i] = username[i] + 1` is verified against the binary.
+  1. **[confirmed]** The check is `want[i] = username[i] + 1` then `strcmp(want, key)` —
+     a pure, invertible byte transform.
+  2. **[confirmed]** No packing/obfuscation (entropy 1.79); standard hardening (PIE/NX/RELRO/canary).
+  3. **[confirmed]** Keygen `key[i] = username[i] + 1` is verified against the binary.
 - **Headline IOCs:** none (benign in-house fixture).
 
 ## Key findings

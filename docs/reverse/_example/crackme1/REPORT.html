@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REPORT — crackme1 (vibe-reverse-2026-06-20_12-00-00)</title>
+<style>
+/* report.css — provided stylesheet for RE REPORT.html.
+   Used verbatim by render_report.py; never generated at runtime. Fully offline:
+   no remote assets and no web fonts — system font stack only. */
+:root {
+  --fg: #1b1f24; --muted: #57606a; --bg: #ffffff; --rule: #d0d7de;
+  --code-bg: #f6f8fa; --accent: #0969da;
+  --confirmed: #1a7f37; --confirmed-bg: #dafbe1;
+  --likely: #9a6700; --likely-bg: #fff8c5;
+  --hypothesis: #57606a; --hypothesis-bg: #eaeef2;
+  --refuted: #cf222e; --refuted-bg: #ffebe9;
+}
+* { box-sizing: border-box; }
+body.report {
+  color: var(--fg); background: var(--bg);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  max-width: 60rem; margin: 2rem auto; padding: 0 1.25rem;
+}
+h1, h2, h3 { line-height: 1.25; margin: 1.6em 0 0.5em; }
+h1 { font-size: 1.9rem; border-bottom: 2px solid var(--rule); padding-bottom: .3em; }
+h2 { font-size: 1.4rem; border-bottom: 1px solid var(--rule); padding-bottom: .25em; }
+h3 { font-size: 1.15rem; }
+a { color: var(--accent); }
+code {
+  background: var(--code-bg); padding: .15em .35em; border-radius: 4px; font-size: .9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+pre { background: var(--code-bg); padding: 1rem; border-radius: 6px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid var(--rule); padding: .5em .7em; text-align: left; vertical-align: top; }
+th { background: var(--code-bg); }
+blockquote { margin: 1em 0; padding: .2em 1em; color: var(--muted); border-left: 4px solid var(--rule); }
+/* confidence badges (set by render_report.py from the [tag] tokens) */
+.tag {
+  display: inline-block; font-size: .8em; font-weight: 600; padding: .05em .5em;
+  border-radius: 999px; text-transform: uppercase; letter-spacing: .03em;
+}
+.tag-confirmed  { color: var(--confirmed);  background: var(--confirmed-bg); }
+.tag-likely     { color: var(--likely);     background: var(--likely-bg); }
+.tag-hypothesis { color: var(--hypothesis); background: var(--hypothesis-bg); }
+.tag-refuted    { color: var(--refuted);    background: var(--refuted-bg); text-decoration: line-through; }
+@media print {
+  body.report { max-width: none; margin: 0; font-size: 12pt; }
+  a { color: inherit; text-decoration: none; }
+  pre, table { page-break-inside: avoid; }
+}
+
+</style>
+</head>
+<body class="report">
+<h1>REPORT — crackme1 (vibe-reverse-2026-06-20_12-00-00)</h1>
+<blockquote>
+<p>Audience: an expert reverse engineer. Put the most important things first.</p>
+</blockquote>
+<h2>Executive summary</h2>
+<ul>
+<li><strong>Outcome / verdict:</strong> solved — the key for any username is recoverable in O(n).</li>
+<li><strong>What it is:</strong> ELF 64-bit PIE x86-64 CTF crackme; a <code>&lt;user&gt; &lt;key&gt;</code> check, not packed.</li>
+<li><strong>Top findings (3–5):</strong></li>
+<li><strong><span class="tag tag-confirmed">confirmed</span></strong> The check is <code>want[i] = username[i] + 1</code> then <code>strcmp(want, key)</code> —
+     a pure, invertible byte transform.</li>
+<li><strong><span class="tag tag-confirmed">confirmed</span></strong> No packing/obfuscation (entropy 1.79); standard hardening (PIE/NX/RELRO/canary).</li>
+<li><strong><span class="tag tag-confirmed">confirmed</span></strong> Keygen <code>key[i] = username[i] + 1</code> is verified against the binary.</li>
+<li><strong>Headline IOCs:</strong> none (benign in-house fixture).</li>
+</ul>
+<h2>Key findings</h2>
+<p><code>main</code> reads <code>argv[1]</code> (user) and <code>argv[2]</code> (key). It computes a <code>want</code> buffer where
+each byte is the corresponding username byte plus one, then accepts iff
+<code>strcmp(want, key) == 0</code>. There is no hashing, encryption, or hidden state.</p>
+<h2>Approaches tried</h2>
+<ul>
+<li><strong>Triage</strong> (<code>triage.sh</code>): identified native ELF, not packed, with a <code>strcmp</code>-based
+  check — worked, routed to static.</li>
+<li><strong>Static</strong> (<code>ghidra_decompile.sh</code>, objdump fallback): recovered the <code>+1</code> transform —
+  worked; concluded direct inversion beats a solver here.</li>
+<li><strong>Solve</strong> (<code>re-scripting</code>): a 1-line pure keygen, unit-tested (<code>"AB"→"BC"</code>) and
+  verified against the real binary (<code>crackme1 AB BC</code> → <code>Correct!</code>).</li>
+</ul>
+<h2>Obfuscation &amp; anti-analysis</h2>
+<p>None present.</p>
+<h2>Crypto &amp; config</h2>
+<p>None — the transform is a plain <code>+1</code>, not cryptography.</p>
+<h2>IOCs</h2>
+<p>None (benign fixture). No C2 / mutex / persistence.</p>
+<h3>YARA</h3>
+<pre><code>(not applicable — benign in-house fixture; no detection rule warranted)
+</code></pre>
+<h2>Dead ends &amp; ideas for next time</h2>
+<ul>
+<li>None needed. For a non-invertible variant (e.g. a hash compare), <code>templates/z3_skel.py</code>
+  or <code>templates/angr_skel.py</code> would recover the key instead of direct inversion.</li>
+</ul>
+<h2>Reproduction</h2>
+<pre><code class="language-sh">python3 scripts/solve_crackme1.py MyName        # prints the key
+./crackme1 MyName &quot;$(python3 scripts/solve_crackme1.py MyName)&quot;   # -&gt; Correct!
+</code></pre>
+<h2>Index</h2>
+<ul>
+<li>Plans: 01-triage-plan.md, 02-static-plan.md, 03-solve-plan.md</li>
+<li>Artifacts: artifacts/triage.txt</li>
+<li>Scripts: scripts/solve_crackme1.py, scripts/test_solve_crackme1.py, scripts/README.md</li>
+</ul>
+</body>
+</html>
