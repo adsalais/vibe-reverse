@@ -9,6 +9,11 @@ For targets where triage/static/deob shows a **dispatcher loop + handler table**
 (virtualized code). Usually reached via the `re-deobfuscate` router. Mostly
 disciplined methodology + scripting.
 
+**Method, failure modes, hand-back rule, worked example:** `references/devirtualize-playbook.md`.
+Reading a large lifted-output/handler dump to extract specific handlers is **mechanical** —
+delegate it per `../reverse-engineering/references/delegating-to-subagents.md`.
+You are the VM worker the `re-deobfuscate` loop dispatches — hand back on a non-VM layer.
+
 ## Method (cite `references/devirt-methodology.md`)
 
 1. **Locate** the dispatcher + handler table; enumerate handlers.
