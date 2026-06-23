@@ -251,7 +251,9 @@ documented. We do not fake unit tests for what cannot be unit-tested.
 approach tried with what worked, what failed, and why**, dead ends + ideas for
 next time, reproduction steps, and an index into `artifacts/`/`scripts/`. It is
 written **even when the investigation failed** — a documented dead end is what
-seeds the next attempt.
+seeds the next attempt. It then renders a self-contained `REPORT.html` (styled by the
+provided `skills/re-report/report.css`, confidence tags shown as badges) via
+`render_report.py`; both files ship, with `REPORT.md` the source of truth.
 
 ---
 
