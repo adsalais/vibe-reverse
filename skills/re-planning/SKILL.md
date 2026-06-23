@@ -46,12 +46,21 @@ approves with runtime in view.
 
 ## 2. Self-review BEFORE presenting (fix inline)
 
-- **Consistency** — does *Assessment* contradict *Proposed next steps*? Does
-  anything contradict `findings.md` or the goal in `00-target.md`?
-- **Relevancy** — is each step justified by a finding and does it advance the
-  goal? Is the *recommended* step the highest-value one? No busywork.
-- **Evidence/honesty** — does each claim cite an `artifacts/` file, or is it
-  marked as an unconfirmed hypothesis? No overclaiming.
+Audit the plan AND the binary's `findings.md` against
+`../reverse-engineering/references/evidence-and-findings.md`:
+
+- **Consistency** — does *Assessment* contradict *Proposed next steps*?
+- **Evidence** — does every claim cite an `artifacts/` pointer (or an address in a
+  named artifact / a script + vector), or is it explicitly tagged `[hypothesis]`? No
+  bare assertions.
+- **No overclaim** — does each confidence tag match its evidence? A `[confirmed]` with
+  no stated `verified:` check is a violation → downgrade to `[likely]` or verify now.
+- **Contradiction** — reconcile new findings against prior `findings.md` and the goal
+  in `00-target.md`; re-tag the loser `[refuted]`.
+- **Negative results recorded** — is everything tried-and-failed this phase in
+  `## Dead ends` (what failed, why, what it rules out)?
+- **Relevancy** — is each step justified by a finding and does it advance the goal? Is
+  the *recommended* step the highest-value one? No busywork.
 - **Scope** — does it propose the NEXT step, not a five-step leap?
 
 **Escalate** to an independent reviewer subagent (give it the plan +
@@ -69,8 +78,10 @@ phase until the human responds. They approve in chat ("approved" / "do 1, skip 2
 
 ## 4. Checkpoint (update STATE.md at every gate)
 
-Each plan is a checkpoint. When you write the plan, update the current binary's
-`STATE.md`:
+Each plan is a checkpoint. When you write the plan, first update the binary's
+`findings.md` (append new finding/dead-end entries, re-tag disproved findings
+`[refuted]`) per `../reverse-engineering/references/evidence-and-findings.md` — it is
+the source of truth. Then update the binary's `STATE.md`:
 - `phase:` / `status: awaiting-approval`
 - `last-approved-plan:` (the previous one) and `next-step:` (the recommended step)
 - refresh `## Open questions`
@@ -89,6 +100,8 @@ slow steps follow `../reverse-engineering/references/long-running-ops.md`
 | "The user is in a hurry, skip the ceremony" | The gate is fastest overall; it prevents wrong turns. |
 | "The plan is trivial" | Trivial plans are approved in seconds — still write it. |
 | "I already know what they'll say" | Then approval costs nothing. Wait for it. |
+| "I'm sure it's AES — no need to verify" | That's `[likely]`, not `[confirmed]`, until an independent check agrees. Verify or downgrade. |
+| "The attempt failed — not worth recording" | Dead ends seed the next attempt. Record it in `## Dead ends`. |
 | "This is taking too long, I'll kill it and move on" | A budget-hit is a question for the user, not your call. Ask (numbered options). |
 
 All of these mean: write the plan, self-review, and STOP.
