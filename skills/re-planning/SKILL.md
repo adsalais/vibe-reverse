@@ -1,17 +1,52 @@
 ---
 name: re-planning
-description: Use when ending a reverse-engineering phase and proposing next steps, before continuing — writes a numbered investigation plan, self-reviews it for consistency and relevancy, then stops for human approval. Symptoms you are about to violate it: "I'll just continue", "skip the plan", "the user is in a hurry". Keywords: RE plan, next steps, approval gate, checkpoint.
+description: Use when ending a reverse-engineering phase and deciding what to do next, before continuing. Symptoms you are about to violate it: "I'll just continue", "it's surely safe to run it", "skip the plan", "the user is in a hurry". Keywords: RE plan, next steps, hypothesis loop, approval gate, doubt-gate, mandatory gate, checkpoint.
 ---
 
 # re-planning
 
 ## Core principle
 
-**The plan is the gate artifact, and the human pilots.** Every phase ends by
-writing a plan, self-reviewing it, and STOPPING for approval before any next-phase
-work. **Violating the letter of the gate is violating the spirit of the gate.**
+**The investigation is a hypothesis loop, and the human pilots the risky turns.** At
+each decision point you analyze the current state, **rank** the competing hypotheses,
+**test the most probable**, and on failure record a dead end and try the next. You
+**proceed on your own** when the next step is confident and reversible; you **STOP for
+the human** when it is uncertain or irreversible. The continuous record is `findings.md`;
+the numbered plan is the **gate artifact**, written when you stop.
 
-## 1. Write the plan
+## 1. The loop
+
+1. **Analyze** the current state (the work of the phase you're in).
+2. **Hypotheses** — enumerate what's going on / what to do next; write each as a
+   `[hypothesis]` finding in `findings.md` with its evidence (per
+   `../reverse-engineering/references/evidence-and-findings.md`).
+3. **Rank** by probability; pick the most probable to test.
+4. **Gate check** (§2) — proceed, or write the plan and stop.
+5. **Test** it (the phase action / next phase).
+6. **On failure** — record a `## Dead ends` entry (what failed, why, what it rules out)
+   and loop to the next-ranked hypothesis.
+
+## 2. The gate — proceed or stop
+
+- **Proceed (no stop)** when the next step is **confident AND reversible AND not on the
+  mandatory list.** Record the hypothesis + result in `findings.md` and continue.
+- **STOP — write the plan (§3) and wait** when the step is **uncertain** (low
+  confidence, or two hypotheses are close) **OR irreversible/costly** **OR on the
+  mandatory list.**
+
+**Mandatory gates — ALWAYS stop, however confident you feel:**
+- running / detonating / emulating an untrusted target (also needs `re-dynamic`'s
+  consent + sandbox);
+- registering a **new binary** (a dropped/unpacked/decrypted payload, `add_binary.sh`);
+- destructive / irreversible **patching** of the target;
+- any **🐢** long/costly step (`../reverse-engineering/references/long-running-ops.md`);
+- anything crossing the sandbox boundary toward the **host**.
+
+**Proceeding never skips the audit:** record the hypothesis/finding and **verify**
+load-bearing claims regardless. "Proceed" relaxes the *human stop*, not the *evidence
+discipline*.
+
+## 3. The gate plan (write when you stop)
 
 Save to `docs/reverse/<investigation>/NN-<phase>-plan.md` (zero-padded `NN`):
 
@@ -22,86 +57,69 @@ Save to `docs/reverse/<investigation>/NN-<phase>-plan.md` (zero-padded `NN`):
 - <summary; link to artifacts/ files, not raw dumps>
 
 ## What I found
-- <key findings, in plain language>
+- <key findings, by claim — the ledger is findings.md>
 
-## Assessment
-- <phase-specific judgement: packed? obfuscated? solver needed? etc.>
+## Hypotheses (ranked)
+1. <most probable> — evidence, why most likely — **cost: ⚡/⏳/🐢**  ← testing this
+2. <alternative> — held for the next loop if 1 fails — **cost: ⚡/⏳/🐢**
 
-## Open questions / uncertainties
-- <what is NOT yet confirmed>
-
-## Proposed next steps
-1. <next action> — why, which skill/tool, expected output — **cost: ⚡/⏳/🐢**
-2. <alternative branch if applicable> — **cost: ⚡/⏳/🐢**
+## Why I stopped
+- <uncertain / irreversible / mandatory-gate — which, and why>
 
 ## Decision needed from you
-1. Approve as-is
-2. Approve with changes
-3. Redirect
+1. Approve as-is   2. Approve with changes   3. Redirect
 Which option?
 ```
 
-Cost tags: ⚡ fast (seconds) · ⏳ minutes · 🐢 long (tens of minutes+) — so the human
-approves with runtime in view.
+Cost tags: ⚡ seconds · ⏳ minutes · 🐢 tens of minutes+. **Right-size:** when the next
+step is obvious and reversible you are *proceeding*, not stopping — the ranked list
+collapses to a one-line note in `findings.md` ("next: <step> — confident, reversible").
+The full plan above is for a **stop**.
 
-## 2. Self-review BEFORE presenting (fix inline)
+## 4. Self-review BEFORE presenting (fix inline)
 
-Audit the plan AND the binary's `findings.md` against
+Audit the plan AND `findings.md` against
 `../reverse-engineering/references/evidence-and-findings.md`:
+- **Evidence** — every claim cites an `artifacts/` pointer or is tagged `[hypothesis]`.
+- **No overclaim** — the tag matches the evidence; a `[confirmed]` with no `verified:` is a violation.
+- **Contradiction** — reconcile vs prior `findings.md` / `00-target.md`; re-tag the loser `[refuted]`.
+- **Negative results recorded** — failed hypotheses are in `## Dead ends`.
+- **Ranking** — is the hypothesis you're testing actually the most probable, given the evidence?
+- **Gate** — did you classify proceed vs stop correctly, and never auto-proceed past a mandatory gate?
 
-- **Consistency** — does *Assessment* contradict *Proposed next steps*?
-- **Evidence** — does every claim cite an `artifacts/` pointer (or an address in a
-  named artifact / a script + vector), or is it explicitly tagged `[hypothesis]`? No
-  bare assertions.
-- **No overclaim** — does each confidence tag match its evidence? A `[confirmed]` with
-  no stated `verified:` check is a violation → downgrade to `[likely]` or verify now.
-- **Contradiction** — reconcile new findings against prior `findings.md` and the goal
-  in `00-target.md`; re-tag the loser `[refuted]`.
-- **Negative results recorded** — is everything tried-and-failed this phase in
-  `## Dead ends` (what failed, why, what it rules out)?
-- **Relevancy** — is each step justified by a finding and does it advance the goal? Is
-  the *recommended* step the highest-value one? No busywork.
-- **Scope** — does it propose the NEXT step, not a five-step leap?
+**Escalate** to an independent reviewer subagent (plan + `00-target.md` + `findings.md`,
+prompted by `reviewer-prompt.md`) when confidence is low, the investigation
+branched/backtracked, or several paths compete. Resolve its issues first.
 
-**Escalate** to an independent reviewer subagent (give it the plan +
-`00-target.md` + `findings.md`, prompted by `reviewer-prompt.md`) when the plan is
-complex or high-uncertainty: the next step is high-cost/irreversible (e.g. running
-the target), confidence is low / many open questions remain, the investigation
-branched or backtracked, or it proposes multiple competing paths. Resolve its
-issues first.
+## 5. Checkpoint (at every gate stop)
 
-## 3. STOP for approval
-
-Present a ≤3-line summary + the plan's path, then **WAIT**. Do not start the next
-phase until the human responds. They approve in chat ("approved" / "do 1, skip 2"
-/ "redirect"), or edit the plan file and say "go".
-
-## 4. Checkpoint (update STATE.md at every gate)
-
-Each plan is a checkpoint. When you write the plan, first update the binary's
-`findings.md` (append new finding/dead-end entries, re-tag disproved findings
-`[refuted]`) per `../reverse-engineering/references/evidence-and-findings.md` — it is
-the source of truth. Then update the binary's `STATE.md`:
+When you write the plan, first update `findings.md` (new finding/dead-end entries,
+re-tag `[refuted]`) — the source of truth — then the binary's `STATE.md`:
 - `phase:` / `status: awaiting-approval`
-- `last-approved-plan:` (the previous one) and `next-step:` (the recommended step)
-- refresh `## Open questions`
-- reconcile the `## Background jobs` ledger (mark finished jobs `done`).
+- `last-approved-plan:` and `next-step:` (the hypothesis being tested)
+- refresh `## Open questions`; reconcile the `## Background jobs` ledger.
 
-This is what lets `re-continue` resume the investigation in a future session. For
-slow steps follow `../reverse-engineering/references/long-running-ops.md`
-(background + budget + **ask before killing**).
+This lets `re-continue` resume later. (On a *proceed* you still update `findings.md`;
+`STATE.md` updates at the next stop.)
+
+## Routing tables are hypothesis sources
+
+A phase's routing table (triage's family table, the obfuscation taxonomy, …) lists the
+**candidate** next-steps a phase can propose — it is a hypothesis source, **not** the
+decision. This loop ranks them and gates. (`re-deobfuscate`'s "peel outermost first" is
+just its ranking heuristic feeding this loop.)
 
 ## Red flags — STOP, you are rationalizing
 
 | Thought | Reality |
 |---|---|
-| "The next step is obviously fine, I'll just do it" | Write the plan and wait. |
-| "I'll save a round-trip by continuing" | The round-trip is the point — the human pilots. |
-| "The user is in a hurry, skip the ceremony" | The gate is fastest overall; it prevents wrong turns. |
-| "The plan is trivial" | Trivial plans are approved in seconds — still write it. |
-| "I already know what they'll say" | Then approval costs nothing. Wait for it. |
-| "I'm sure it's AES — no need to verify" | That's `[likely]`, not `[confirmed]`, until an independent check agrees. Verify or downgrade. |
-| "The attempt failed — not worth recording" | Dead ends seed the next attempt. Record it in `## Dead ends`. |
-| "This is taking too long, I'll kill it and move on" | A budget-hit is a question for the user, not your call. Ask (numbered options). |
+| "It's surely safe to just run it" | Running an untrusted target is a **mandatory gate** — stop, get consent + sandbox. |
+| "I'm confident, I'll patch / unpack-to-a-new-binary and continue" | New binary / destructive patch are mandatory gates — stop. |
+| "I'll skip recording — I'm proceeding anyway" | Proceeding never skips the audit. Record the hypothesis + verify. |
+| "Two routes look equally likely, I'll just pick one" | That's *uncertain* → stop and ask (numbered options). |
+| "I'm sure it's AES — no need to verify" | `[likely]`, not `[confirmed]`, until an independent check agrees. |
+| "The attempt failed — not worth recording" | Dead ends seed the next loop. Record it in `## Dead ends`. |
+| "This 🐢 step is obviously right, I'll launch it unattended" | 🐢 is a mandatory gate — state the cost and stop first. |
 
-All of these mean: write the plan, self-review, and STOP.
+Confident **and** reversible → proceed (and record). Uncertain **or** irreversible **or**
+mandatory → write the plan and STOP.
