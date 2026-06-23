@@ -4,9 +4,10 @@ A portable family of [skills](https://agentskills.io) that turns an AI agent int
 **disciplined reverse-engineering co-pilot** — you steer; it does the heavy lifting and
 leaves an auditable trail.
 
-It runs an investigation as a **hypothesis loop**, not a black box:
+It **triages the target once** to get its bearings, then runs the investigation as a
+**hypothesis loop**, not a black box — at each phase:
 
-> analyze → rank the hypotheses → test the most probable → record what failed → … → report
+> rank the live hypotheses → test the most probable → record what failed → re-assess → … → report
 
 The agent **proceeds on its own for confident, reversible steps** and **stops for your
 approval** when a step is uncertain or irreversible — running an untrusted target,

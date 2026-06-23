@@ -9,10 +9,12 @@ description: Use when reverse-engineering or analyzing an unknown binary, execut
 > anything (`apt`, `pip install`, `curl`-to-fetch-a-tool). A missing tool is a
 > path/usage problem, never an install problem.
 
-Pilot an RE investigation as a **hypothesis loop**: analyze → rank hypotheses → test the
-most probable → on failure, record a dead end and try the next → … → report. You
-**proceed on confident, reversible steps** and **STOP for the human on uncertain or
-irreversible ones** (the gate + mandatory-stop list live in **`re-planning`**).
+Pilot an RE investigation as a **hypothesis loop**: **triage the target once** to get
+oriented, then at each phase rank the hypotheses → test the most probable → on failure,
+record a dead end and try the next → … → report. You **proceed on confident, reversible
+steps** and **STOP for the human on uncertain or irreversible ones** (the gate +
+mandatory-stop list live in **`re-planning`**). (`re-triage` runs once per binary;
+re-identifying *changed* bytes after a deobfuscation peel is the one exception.)
 
 ## Start (or resume)
 
