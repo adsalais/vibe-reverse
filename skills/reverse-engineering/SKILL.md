@@ -9,8 +9,10 @@ description: Use when reverse-engineering or analyzing an unknown binary, execut
 > anything (`apt`, `pip install`, `curl`-to-fetch-a-tool). A missing tool is a
 > path/usage problem, never an install problem.
 
-Pilot an RE investigation as a loop: **analyze → write a plan → human approves →
-next phase → … → report.** One phase at a time; the human approves each plan.
+Pilot an RE investigation as a **hypothesis loop**: analyze → rank hypotheses → test the
+most probable → on failure, record a dead end and try the next → … → report. You
+**proceed on confident, reversible steps** and **STOP for the human on uncertain or
+irreversible ones** (the gate + mandatory-stop list live in **`re-planning`**).
 
 ## Start (or resume)
 
@@ -46,8 +48,10 @@ next phase → … → report.** One phase at a time; the human approves each pl
 
 ## Always
 
-- **Every phase ends with `re-planning`** — write a plan, self-review, update the
-  binary's `STATE.md`, and STOP for approval. REQUIRED.
+- **Every phase runs the `re-planning` loop** — rank hypotheses, gate (proceed if
+  confident + reversible; STOP if uncertain / irreversible / a mandatory gate), and
+  checkpoint. The routing table below lists *candidate hypotheses*, not automatic
+  decisions. REQUIRED.
 - Use **`re-scripting`** when a task needs custom code.
 - **Record findings** per `references/evidence-and-findings.md` — every claim cites
   evidence + a confidence tag (`[confirmed]`/`[likely]`/`[hypothesis]`/`[refuted]`);
