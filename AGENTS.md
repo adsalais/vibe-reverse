@@ -90,8 +90,10 @@ them needs **no image rebuild**. Only `skills/`, `deploy/entrypoint.sh`,
 - Each session lives in the working dir as `vibe-reverse-<datetime>/<binary>/`
   (multiple binaries per session; a `STATE.md` cursor per binary; a session `index.md`).
   Each phase writes a reviewed plan there.
-- `re-planning` self-reviews (consistency / relevancy / evidence / scope), then
-  escalates to an independent reviewer subagent. **The human approves each plan.**
+- `re-planning` runs a hypothesis loop and self-reviews (evidence / honesty / ranking /
+  gate), escalating to an independent reviewer subagent when uncertain. **The human
+  approves at each gate** — the loop proceeds on confident, reversible steps and stops on
+  uncertain / irreversible / mandatory ones (running the target, a new binary, 🐢 steps).
 - `re-report` is mandatory — write the report **even on a complete failure**.
 
 **On-the-fly Python** (`re-scripting`): test-first, with inline `# why` comments

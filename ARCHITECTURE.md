@@ -12,9 +12,11 @@ How the reverse-engineering harness works, end to end.
 
 The harness turns an AI agent into a **disciplined reverse-engineering co-pilot**.
 Reverse engineering is uncertain and iterative — you rarely know step 3 until step
-2 is done — so instead of letting the agent race ahead, the harness makes it work
-in a loop: do one phase of analysis, write a short **plan**, **stop for your
-approval**, then continue. The agent does the heavy lifting (running tools,
+2 is done — so instead of letting the agent race ahead, the harness makes it work as a
+**hypothesis loop**: analyze, rank the competing hypotheses, and test the most probable.
+It **proceeds on confident, reversible steps** and **stops for your approval on
+uncertain or irreversible ones** (and always stops for a fixed set of high-stakes
+actions — running the target, a new binary, 🐢 steps). The agent does the heavy lifting (running tools,
 reading decompiled code, writing scripts); **you stay in control of direction**.
 It is modelled on the `superpowers` workflow (`brainstorming → writing-plans →
 executing-plans`), specialized for RE.
@@ -178,10 +180,13 @@ steps, overclaims, and scope creep — triggered when the next step is
 high-cost/irreversible (e.g. running the target), confidence is low, the
 investigation branched, or several paths compete.
 
-Then it **STOPS**: presents a ≤3-line summary + the plan path and waits. You
-approve in chat (*"approved"*, *"do 1, skip 2"*, *"redirect"*) or edit the plan
-file and say *"go."* This gate is the whole point — *violating the letter of the
-gate is violating its spirit.*
+Then it **gates**: on a confident, reversible step it records the hypothesis in
+`findings.md` and proceeds; on an **uncertain or irreversible** step — or any
+**mandatory gate** (running the target, registering a new binary, destructive patching,
+a 🐢 step, crossing toward the host) — it writes the plan, presents a ≤3-line summary +
+the plan path, and **waits**. You approve in chat (*"approved"*, *"do 1, skip 2"*,
+*"redirect"*) or edit the plan and say *"go."* Proceeding never skips recording or
+verification — see `re-planning`.
 
 ---
 
