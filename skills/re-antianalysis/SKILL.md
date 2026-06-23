@@ -9,6 +9,11 @@ Detect & neutralize the target's **own** anti-analysis. Pairs with `re-dynamic`
 (apply at detonation/emulation) and feeds `re-deobfuscate` (anti-disasm is a deob
 layer).
 
+**Method, failure modes, worked example:** `references/antianalysis-playbook.md`.
+Reading the scan/trace output to extract the check sites is **mechanical** — delegate it
+per `../reverse-engineering/references/delegating-to-subagents.md`.
+The neutralize routes you pick are candidate hypotheses for the `re-planning` loop — it ranks and gates.
+
 ## 1. Detect
 
 ```sh
