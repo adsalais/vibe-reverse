@@ -5,7 +5,7 @@ WHY: explain the reverse-engineering reasoning for a learner — what you observ
 in the binary, and why this code reproduces it. Keep it honest about assumptions.
 
 Usage:
-    python3 script_template.py [--input ...]
+    python3 python_template.py [--input ...]
 """
 import argparse
 

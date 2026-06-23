@@ -50,5 +50,5 @@ Use **`re-coding`** for custom parsing/analysis code.
 
 ## Always
 
-End the phase with **`re-planning`**: write `NN-static-plan.md`, self-review,
-STOP for approval. REQUIRED. Relative paths only.
+End the phase via **`re-planning`**: write `NN-static-plan.md`, self-review, then gate —
+proceed if confident + reversible, stop if uncertain/irreversible. REQUIRED. Relative paths only.

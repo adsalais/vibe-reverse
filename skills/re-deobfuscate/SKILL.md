@@ -5,8 +5,8 @@ description: Use when triage or static analysis shows a binary is packed or obfu
 
 # re-deobfuscate
 
-A **router**, not a one-shot unpack. Advanced malware **stacks** techniques, so work
-a loop:
+The stacked-layer **loop owner**, not a one-shot unpack. Advanced malware **stacks**
+techniques, so work a loop:
 
 > **inventory → order → peel one layer → re-triage → repeat** — until entropy is
 > normal, strings/imports are readable, and control flow is sane.

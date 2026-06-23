@@ -37,7 +37,7 @@ Writes `artifacts/triage.txt` and prints a summary: type/arch, size, sha256,
 ## Always
 
 - Record the target + **authorization/scope** in `00-target.md` (if not already).
-- End the phase with **`re-planning`**: write `01-triage-plan.md`, self-review,
-  STOP for approval. REQUIRED.
+- End the phase via **`re-planning`**: write `01-triage-plan.md`, self-review, then
+  gate — proceed if confident + reversible, stop if uncertain/irreversible. REQUIRED.
 
 Relative paths only; put the summary in the plan, not the raw artifact.

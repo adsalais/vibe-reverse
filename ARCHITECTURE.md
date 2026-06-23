@@ -45,8 +45,8 @@ executing-plans`), specialized for RE.
    │             (fix inline; escalate to an independent reviewer if complex)
    │                        │
    │                        ▼
-   │             🛑 STOP — you review & approve the plan
-   │                        │   (approve / edit / redirect)
+   │             🛑 GATE — proceed if confident + reversible; else STOP
+   │                        │   for approval (approve / edit / redirect)
    │                        ▼
    └──────────  orchestrator routes to the next phase
 
@@ -55,7 +55,8 @@ executing-plans`), specialized for RE.
 
 Two rules make this work:
 
-1. **One skill, one job, one approved artifact before moving on.**
+1. **One skill, one job; the doubt-gate decides** — proceed on confident, reversible
+   steps; stop for approval on uncertain / irreversible / mandatory ones.
 2. **Heavy/noisy output goes to files, not the chat.** Decompiling a binary spews
    thousands of lines; the phase writes them to `artifacts/` and puts only a
    *summary* in the plan. This keeps the conversation readable and lets the
@@ -94,8 +95,8 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 | Skill | Role | Status |
 |---|---|---|
 | `reverse-engineering` | Entry point: authorization, scaffolding, routing (air-gapped) | ✅ built |
-| `re-planning` | The plan artifact + self-review + STOP-for-approval gate + STATE.md checkpoint | ✅ built |
-| `re-coding` | On-the-fly Python with TDD + learner-oriented docs | ✅ built |
+| `re-planning` | The hypothesis loop + self-review + doubt-gate (mandatory stops for irreversible/costly) + findings/STATE checkpoint | ✅ built |
+| `re-coding` | Plan→implementer-subagent→review code work; Python / shell / Rust | ✅ built |
 | `re-continue` | Resume a paused session from `STATE.md` (read-only; stops at the gate) | ✅ built |
 
 **Phases** — the native/CTF binary vertical:
@@ -104,7 +105,7 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 |---|---|---|
 | `re-triage` | Identify the artifact; record scope; route by target family | ✅ built |
 | `re-static` | Decompile & statically analyze; capa/FLOSS scan; route | ✅ built |
-| `re-deobfuscate` | Stacked-layer **router**: inventory → order → peel → re-triage | ✅ built |
+| `re-deobfuscate` | Stacked-layer **loop owner**: inventory → order → peel → re-triage (dispatches `re-devirtualize`) | ✅ built |
 | `re-devirtualize` | VM-based obfuscation (incl. nested/recursive VMs) | ✅ built |
 | `re-antianalysis` | Detect & neutralize anti-debug/anti-VM/anti-disasm | ✅ built |
 | `re-crypto` | Identify & replicate crypto (decrypt strings/config/C2) | ✅ built |
@@ -216,12 +217,15 @@ malware uses the no-network Windows microVM instead.)
 
 ---
 
-## 8. On-the-fly scripting
+## 8. On-the-fly coding
 
 When a phase needs real code (a parser, a deobfuscation routine, a keygen, an
-angr/z3 harness), `re-coding` writes it **test-first** (reusing
-`superpowers:test-driven-development`), from `script_template.py`, with a module
-docstring + inline `# why` comments aimed at a learner. Code and test land in the
+angr/z3 harness), `re-coding` runs a one-artifact `subagent-driven-development` loop:
+the pilot writes a **test-gated plan**, a **bounded implementer subagent** makes the
+tests pass (handing back BLOCKED rather than churning), then the pilot **code-reviews**
+the result. It picks the language by dependency footprint — **Python** (default / the RE
+stack), **shell** (CLI glue), or **Rust** (self-contained, no-deps heavy logic; std-only
+`rustc`) — from `python_template.py` / `rust_template.rs`. Code and test land in the
 investigation's `scripts/`.
 
 **Pragmatic testing stance:** the deterministic logic (parsers, transforms,
@@ -282,8 +286,8 @@ reverse_skills/
 Two kinds of test:
 
 - **Deterministic script tests** — `new_session.sh`/`add_binary.sh`,
-  `session_status.sh`, the per-phase helper scripts, and `script_template.py` have
-  real tests (`tests/scripts/`) run on every change.
+  `session_status.sh`, the per-phase helper scripts, and the `re-coding` templates
+  (`python_template.py` / `rust_template.rs`) have real tests (`tests/scripts/`) run on every change.
 - **Skill scenario tests** — each `SKILL.md` is built with the `writing-skills`
   RED→GREEN method: a fresh subagent attempts a scenario *without* the skill
   (baseline failure), then *with* it (must comply). Scenarios live in

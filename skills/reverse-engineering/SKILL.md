@@ -36,8 +36,8 @@ irreversible ones** (the gate + mandatory-stop list live in **`re-planning`**).
 |---|---|
 | Just starting | `re-triage` |
 | Native binary, after triage | `re-static` |
-| Packed / obfuscated (stacked layers) | `re-deobfuscate` (the router) |
-| Virtualized (VM dispatcher + handler table) | `re-devirtualize` |
+| Packed / obfuscated (stacked layers) | `re-deobfuscate` (owns the peel loop) |
+| Virtualized (VM dispatcher + handler table) | `re-deobfuscate` (it dispatches `re-devirtualize`) |
 | Anti-debug / anti-VM / anti-disasm present | `re-antianalysis` |
 | Crypto / encrypted strings / config | `re-crypto` |
 | Harvest C2/IOCs + write a YARA rule | `re-config` |

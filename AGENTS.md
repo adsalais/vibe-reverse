@@ -9,8 +9,9 @@ maintaining the harness). For how the harness *runs* an investigation, read
 Two things that ship together:
 
 1. **A portable reverse-engineering skill family** (`skills/`) — 14 skills that
-   pilot an RE investigation as a reviewed loop (`analyze → plan → human approves
-   → execute → report`). Works identically in Claude Code and opencode (both read
+   pilot an RE investigation as a hypothesis loop (`analyze → rank hypotheses → test →
+   gate → … → report`), where the gate proceeds on confident, reversible steps and stops
+   for approval on uncertain/irreversible ones. Works identically in Claude Code and opencode (both read
    `~/.claude/skills/`). (v2 target: spine `reverse-engineering` / `re-planning` /
    `re-coding` / `re-continue`; phases `re-triage` / `re-static` /
    `re-deobfuscate` / `re-devirtualize` / `re-antianalysis` / `re-crypto` /
@@ -96,9 +97,10 @@ them needs **no image rebuild**. Only `skills/`, `deploy/entrypoint.sh`,
   uncertain / irreversible / mandatory ones (running the target, a new binary, 🐢 steps).
 - `re-report` is mandatory — write the report **even on a complete failure**.
 
-**On-the-fly Python** (`re-coding`): test-first, with inline `# why` comments
-aimed at a learner; runs in the global `python3` (the air-gapped image installs all
-Python tools globally — no venv).
+**On-the-fly code** (`re-coding`): a test-gated plan → bounded implementer subagent →
+code review; language by footprint — Python (default) / shell / Rust (std-only `rustc`).
+Python runs in the global `python3` (the air-gapped image installs all Python tools
+globally — no venv).
 
 **Workflow & git**: follow the `superpowers` flow (brainstorm → write plan →
 execute → finish). TDD, small frequent commits, DRY / YAGNI.necer reference claude as the co-author
