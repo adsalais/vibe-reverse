@@ -31,7 +31,19 @@ if [ ! -f "$DIR/00-target.md" ]; then
 EOF
 fi
 
-[ -f "$DIR/findings.md" ] || printf '# Findings — %s\n\n(append cumulative findings here)\n' "$NAME" > "$DIR/findings.md"
+if [ ! -f "$DIR/findings.md" ]; then
+  cat > "$DIR/findings.md" <<EOF
+# Findings — ${NAME}
+
+## Findings
+<!-- one entry per finding, tag first: [confirmed|likely|hypothesis|refuted] claim;
+     then "evidence: artifacts/...:line" (mandatory); "verified: how" for [confirmed].
+     See reverse-engineering/references/evidence-and-findings.md -->
+
+## Dead ends
+<!-- what was tried; why it failed (with evidence); what it rules out / next idea -->
+EOF
+fi
 
 if [ ! -f "$DIR/STATE.md" ]; then
   cat > "$DIR/STATE.md" <<EOF
