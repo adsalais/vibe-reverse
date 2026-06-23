@@ -38,8 +38,8 @@ re-identifying *changed* bytes after a deobfuscation peel is the one exception.)
 |---|---|
 | Just starting | `re-triage` |
 | Native binary, after triage | `re-static` |
-| Packed / obfuscated (stacked layers) | `re-deobfuscate` (owns the peel loop) |
-| Virtualized (VM dispatcher + handler table) | `re-deobfuscate` (it dispatches `re-devirtualize`) |
+| Packed / obfuscated | `re-deobfuscate` (peels one layer; the loop iterates) |
+| Virtualized (outermost layer is a VM) | `re-devirtualize` |
 | Anti-debug / anti-VM / anti-disasm present | `re-antianalysis` |
 | Crypto / encrypted strings / config | `re-crypto` |
 | Harvest C2/IOCs + write a YARA rule | `re-config` |

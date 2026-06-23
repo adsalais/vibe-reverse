@@ -51,8 +51,9 @@ executing-plans`), specialized for RE.
    │                         ▼
    └──────────  loop to the next-most-probable hypothesis / phase
 
-   …deobfuscation peels layers of the SAME binary in place (incl. a nested VM);
-     only a peel that drops a SEPARATE binary → add_binary → its own bootstrap
+   …deobfuscation peels ONE layer per pass — the loop re-invokes it for the next
+     (layers nest in the SAME binary, incl. nested VMs); only a peel that drops a
+     SEPARATE binary → add_binary → its own bootstrap
    …solved or dead-ended → re-report writes REPORT.md + REPORT.html (even on failure)
 ```
 
@@ -108,7 +109,7 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 |---|---|---|
 | `re-triage` | Identify the artifact; record scope; route by target family | ✅ built |
 | `re-static` | Decompile & statically analyze; capa/FLOSS scan; route | ✅ built |
-| `re-deobfuscate` | Stacked-layer **loop owner**: inventory → order → peel → re-triage (dispatches `re-devirtualize`) | ✅ built |
+| `re-deobfuscate` | Peels **one** obfuscation layer; the `re-planning` loop iterates & routes | ✅ built |
 | `re-devirtualize` | VM-based obfuscation (incl. nested/recursive VMs) | ✅ built |
 | `re-antianalysis` | Detect & neutralize anti-debug/anti-VM/anti-disasm | ✅ built |
 | `re-crypto` | Identify & replicate crypto (decrypt strings/config/C2) | ✅ built |

@@ -1,56 +1,53 @@
-# Deobfuscation playbook — peel the stack, outermost first
+# Deobfuscation playbook — peel one layer, return to the loop
 
-Advanced samples **stack** obfuscation (packing + strings + CFF + a VM…). This phase is
-the stacked-layer worker: inventory the layers, peel outermost-first, re-assess after
-each peel. Its loop is the **ranking heuristic** feeding the `re-planning` hypothesis loop
-— "the outermost layer is X" is the top hypothesis; peeling it is the test.
+Advanced samples **stack** obfuscation (packing + strings + CFF + a VM…). This phase peels
+**one** layer well and returns — it does **not** iterate. The `re-planning` loop drives the
+stacking: it re-assesses each peeled result and re-invokes this phase (or routes to
+`re-devirtualize` / `re-crypto` / …) for the next layer.
 
 ## Method
 
-1. **Inventory** every technique present — `deob_map.sh`, capa/FLOSS, DIE (`diec`),
-   entropy. Identify each with `obfuscation-taxonomy.md` (sibling reference).
-2. **Rank outermost-first** (packing/encryption → control-flow → virtualization). You
-   can't read flattened code inside a packed blob.
-3. **Peel the top layer** with its handler (taxonomy table), then **re-assess the result
-   in place** — re-run the triage scan (`triage.sh`) + a `re-static` look on the
-   now-changed bytes to find the next layer. Most peels stay in the **same** binary (an
-   unpacked section, a de-flattened function, a **nested VM**); keep looping on it. Only a
-   peel that drops a **separate** binary → `add_binary.sh` + bootstrap (`re-triage`) it as
-   a peer.
-4. **A VM layer → dispatch `re-devirtualize`** as the worker (a nested VM is a deeper layer
-   of the same binary — devirt recurses, or the loop re-dispatches it); when it returns the
-   lifted logic, **re-assess and continue the loop.** Virtualization is a step in the loop,
-   not a hand-off that ends it.
-5. Record each layer + handler + result as findings (with evidence). Continue until
-   entropy is normal, strings/imports are readable, and control flow is sane.
+1. **Identify the outermost layer** — `deob_map.sh`, capa/FLOSS, DIE (`diec`), entropy;
+   map it with `obfuscation-taxonomy.md` (sibling reference). Note suspected inner layers
+   as `[hypothesis]` findings. The outermost is the only one you can peel now (you can't
+   read flattened code inside a packed blob).
+2. **Peel it** with its handler (taxonomy table) and record what changed as findings with
+   evidence. If the outermost layer is a **VM**, don't peel — the next hypothesis is
+   `re-devirtualize`; crypto-gated → `re-crypto`; interleaved anti-analysis → `re-antianalysis`.
+3. **Return to the loop.** `re-planning` re-assesses the result (re-scan the changed bytes)
+   and picks the next hypothesis. Most peels stay in the **same** binary (an unpacked
+   section, a de-flattened function, a **nested VM**); only a peel that drops a **separate**
+   binary → `add_binary.sh` + bootstrap (`re-triage`) it as a peer.
 
 ## Failure modes / wrong-track signals
 
-- **Peeling inner-first** — de-flattening code that's still packed/encrypted.
-- **Not re-assessing after a peel** — you miss the layer the peel just exposed.
-- **Treating a VM as just-another-peel** — dispatch `re-devirtualize`, don't hand-roll it.
-- **A peeled payload is a new binary** but you keep going in-place — mandatory gate
-  (`add_binary.sh`, triage it as a peer).
+- **Trying to clear the whole stack in one phase** — peel one layer and return; the loop
+  handles the rest.
+- **Peeling inner-first** — de-flattening code that's still packed/encrypted; peel the
+  outermost.
+- **Hand-rolling devirt or decryption** — a VM/crypto layer is the *loop's* next hypothesis
+  (`re-devirtualize` / `re-crypto`), not something you improvise here.
+- **Mistaking a deeper layer for a new binary** — a nested VM / unpacked section is the
+  *same* binary; only a separate dropped file is a new binary (mandatory gate → `add_binary`).
 
 ## Red flags — STOP
 
 | Thought | Reality |
 |---|---|
-| "I'll de-flatten now, the packing can wait" | Outermost first — you can't read code inside a packed blob. |
-| "Peeled it, moving on" (no re-assess) | Re-assess after every peel — re-scan the changed bytes; a new layer may have appeared. |
-| "Unpacked to a new binary, I'll keep analysing here" | New binary = mandatory gate → `add_binary.sh`, triage as a peer. |
-| "I'll devirtualize this VM myself inline" | Dispatch `re-devirtualize` (the worker); it hands back if it hits a non-VM layer. |
+| "I'll keep peeling here until it's clean" | Peel **one** layer and return — the `re-planning` loop iterates. |
+| "It's a VM, I'll devirtualize it inline" | Record "outermost is a VM" and return; the loop routes to `re-devirtualize`. |
+| "Unpacked it — I'll keep going in place on this new binary" | A *separate* dropped binary is a mandatory gate → `add_binary.sh`, bootstrap it. |
 
 ## Have I understood enough?
 
-A layer is peeled when its artifact is gone from the next re-assess (entropy dropped,
-strings/imports readable). The phase is done when the binary re-assesses clean — then
-route on. Don't over-peel a layer you've already removed.
+You've peeled the **outermost** layer and recorded the result with evidence. Whether
+another layer remains is the **loop's** call (it re-assesses) — not something you decide by
+looping here.
 
 ## Worked example
 
-A dropper: triage shows entropy 7.9 + `UPX!`. Top hypothesis: UPX packing → `unpack.sh`
-→ re-assess (same binary, unpacked). Entropy normal now, but every function routes through
-one dispatcher with equal-size blocks → control-flow flattening → de-flatten via miasm
-(`re-coding`) → re-assess → clean C. Record each peel as a `[confirmed]` finding (evidence:
-before/after artifacts).
+A dropper: triage shows entropy 7.9 + `UPX!`. Outermost = UPX packing → `unpack.sh` →
+**return**. The loop re-assesses: entropy normal, but one dispatcher + equal-size blocks →
+control-flow flattening is now outermost → `re-deobfuscate` again → de-flatten via miasm
+(`re-coding`) → **return** → loop re-assesses → clean C → route on. Each pass peels one
+layer; the loop drives.

@@ -1,8 +1,8 @@
-# Devirtualization playbook — the VM worker, dispatched by the loop
+# Devirtualization playbook — lift the VM, then return to the loop
 
-`re-devirtualize` is the **worker** the `re-deobfuscate` loop dispatches when the current
-layer is a VM (dispatcher + handler table). It does the deep, often-partial work of
-recovering readable logic — it does **not** own a peel loop of its own.
+The `re-planning` loop routes here when the **outermost layer is a VM** (dispatcher +
+handler table). You do the deep, often-partial work of recovering readable logic, then
+return — you don't drive the surrounding peeling (that's the loop's job).
 
 ## Method
 
@@ -13,18 +13,18 @@ templates via `re-coding` (test the deterministic decoder). Heavy symbolic/lift 
 are **🐢, a mandatory gate** — run them per
 `../../reverse-engineering/references/long-running-ops.md`.
 
-## Hand back to the loop
+## Uncovered a non-VM layer? Record it and return
 
-If you find a **non-VM layer** — encrypted bytecode, packing around the VM, interleaved
-anti-analysis — **do not improvise a peel loop here.** Return to the owner: packing/
-strings/CFF → `re-deobfuscate`; a crypto-gated bytecode blob → `re-crypto`, then resume;
-anti-disasm/anti-debug → `re-antianalysis`, then resume. You are the VM worker; the loop
-owns ordering.
+If lifting exposes a **non-VM layer** — encrypted bytecode, packing around the VM,
+interleaved anti-analysis — **don't improvise.** Record it as a finding and **return to
+the loop**, which routes the next hypothesis: packing/strings/CFF → `re-deobfuscate`;
+crypto-gated bytecode → `re-crypto`; anti-disasm/anti-debug → `re-antianalysis`. (Nested
+*VMs* are the exception — those you lift in place via recursion; see the Method.)
 
 ## Failure modes / wrong-track signals
 
-- **Arrived at a "VM" that's still wrapped** — surrounding layers weren't peeled; hand
-  back rather than fighting noise.
+- **Arrived at a "VM" that's still wrapped** — surrounding layers weren't peeled; record
+  that and return rather than fighting noise (the loop peels them first).
 - **Presenting a partial lift as complete** — devirt is usually partial; tag confidence
   and list unresolved handlers.
 - **Nested-VM depth blows the budget** — each level multiplies cost (🐢); gate it.
@@ -33,7 +33,7 @@ owns ordering.
 
 | Thought | Reality |
 |---|---|
-| "There's packing around the VM, I'll just peel it here" | Hand back to `re-deobfuscate` — it owns the loop. |
+| "There's packing around the VM, I'll just peel it here" | Record it and return — the loop routes to `re-deobfuscate`. |
 | "I lifted most of it, call it done" | Partial is the norm — confidence-tag it; list the gaps. |
 | "I'll recurse this nested VM unattended" | Deep recursion is 🐢 — mandatory gate; state the cost and stop. |
 
@@ -41,7 +41,7 @@ owns ordering.
 
 Deliver the **dispatcher map + opcode→semantics table + a confidence-tagged partial
 lift** with unresolved handlers listed. That is real progress — you don't need a complete
-decompilation to hand back useful logic.
+decompilation to return useful logic to the loop.
 
 ## Worked example
 
