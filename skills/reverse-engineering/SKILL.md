@@ -21,7 +21,8 @@ next phase → … → report.** One phase at a time; the human approves each pl
    sh new_session.sh <binary> <case-slug>
    ```
    This creates `vibe-reverse-<datetime>/<binary>/` (with `00-target.md`,
-   `findings.md`, `STATE.md`, `artifacts/`, `scripts/`) and a session `index.md`.
+   `findings.md` — the evidence ledger, `STATE.md`, `artifacts/`, `scripts/`) and a
+   session `index.md`.
    **Resuming** a paused case instead? Use **`re-continue`**.
 3. **Multi-binary:** when a payload is unpacked/dropped/decrypted, run
    `sh add_binary.sh <session> <payload> <parent>`, re-triage it as a peer, and
@@ -48,6 +49,12 @@ next phase → … → report.** One phase at a time; the human approves each pl
 - **Every phase ends with `re-planning`** — write a plan, self-review, update the
   binary's `STATE.md`, and STOP for approval. REQUIRED.
 - Use **`re-scripting`** when a task needs custom code.
+- **Record findings** per `references/evidence-and-findings.md` — every claim cites
+  evidence + a confidence tag (`[confirmed]`/`[likely]`/`[hypothesis]`/`[refuted]`);
+  verify before you call it `[confirmed]`; keep dead ends.
+- **Delegate only mechanical work** — subagents do bounded, single-purpose tasks and
+  return results + evidence (they never write findings); judgment, iteration, and
+  strategy stay in this piloted loop under the gate.
 - Heavy tool output → `artifacts/`; put only summaries in the plan and chat.
 - **Present user choices as a numbered list** ending "Which option?".
 - Slow steps follow `references/long-running-ops.md` (background + budget +

@@ -23,6 +23,10 @@ reading `00-target.md`, every `NN-*-plan.md`, `findings.md`, and `artifacts/`.
   most important findings, and the headline IOCs. The reader is an **expert**, so
   the body is technical: key findings, approaches tried (what worked/failed/why),
   obfuscation & anti-analysis defeated, crypto & config recovered.
+- **Traceable & honest:** every claim traces to a finding in `findings.md` and carries
+  its confidence tag; the verdict reflects the weakest link (a conclusion built on a
+  `[hypothesis]` is not presented as confirmed). Surface the **dead ends** prominently —
+  what was ruled out is signal.
 - **IOCs + a YARA rule** for the blue team; **Index** the `artifacts/`/`scripts/`
   yourself (list the folders).
 - The session `index.md` also opens with a case-level **executive summary**
