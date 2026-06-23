@@ -26,31 +26,34 @@ executing-plans`), specialized for RE.
 ## 2. The core loop
 
 ```
-        ┌─────────────────────────────────────────────────────┐
-        │  reverse-engineering  (entry / orchestrator)         │
-        │  records authorization, scaffolds the investigation, │
-        │  routes to the current phase                         │
-        └───────────────┬─────────────────────────────────────┘
-                        │
-                        ▼
-   ┌────────►  [ PHASE SKILL does its analysis ]  ── uses ──►  helper scripts +
-   │             triage → static → deobf/solve/dynamic          tools (Ghidra, r2,
-   │                        │                                    angr…) → write
-   │                        │                                    big output to files
-   │                        ▼
-   │          [ re-planning: write NN-<phase>-plan.md ]
-   │                        │
-   │                        ▼
-   │          [ SELF-REVIEW: consistency · relevancy · evidence · scope ]
-   │             (fix inline; escalate to an independent reviewer if complex)
-   │                        │
-   │                        ▼
-   │             🛑 GATE — proceed if confident + reversible; else STOP
-   │                        │   for approval (approve / edit / redirect)
-   │                        ▼
-   └──────────  orchestrator routes to the next phase
+        ┌──────────────────────────────────────────────┐
+        │  reverse-engineering (entry / orchestrator)   │
+        │  records authorization, scaffolds the session │
+        └───────────────┬──────────────────────────────┘
+              BOOTSTRAP  │  (once per binary)
+                         ▼
+        ┌──────────────────────────────────────────────┐
+        │  re-triage — identify format/arch/packing/    │
+        │  family, then route into the loop             │
+        └───────────────┬──────────────────────────────┘
+                         ▼
+   ┌────────►  [ ANALYSIS PHASE does its work ]  ──►  tools (Ghidra, r2, angr…)
+   │             static · deobfuscate · devirt ·        → big output to artifacts/
+   │             antianalysis · crypto · config ·
+   │             solve · dynamic
+   │                         │
+   │                         ▼
+   │          [ re-planning: rank hypotheses → write NN-plan → self-review ]
+   │             (evidence · honesty · ranking · gate; reviewer if uncertain)
+   │                         │
+   │                         ▼
+   │             🛑 GATE — proceed if confident + reversible; else STOP for approval
+   │                         ▼
+   └──────────  loop to the next-most-probable hypothesis / phase
 
-   …when solved or dead-ended →  re-report writes REPORT.md (even on failure)
+   …deobfuscation peels layers of the SAME binary in place (incl. a nested VM);
+     only a peel that drops a SEPARATE binary → add_binary → its own bootstrap
+   …solved or dead-ended → re-report writes REPORT.md + REPORT.html (even on failure)
 ```
 
 Two rules make this work:

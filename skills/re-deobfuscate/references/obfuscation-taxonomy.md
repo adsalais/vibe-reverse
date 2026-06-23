@@ -11,7 +11,7 @@ Peel OUTERMOST first. After each peel, re-run triage + static; repeat until clea
 | Control-flow flattening | one dispatcher switch, many same-size blocks, a state var | de-flatten via miasm/angr symbolic recovery (`re-coding`) |
 | Opaque / bogus predicates | always-true/false branches, dead code | prove constant with z3, patch out (keystone/lief), reanalyze |
 | Virtualization | fetch-decode-execute loop, virtual PC, handler table | → `re-devirtualize` |
-| Encrypted layers | a crypto routine gates the next stage | → `re-crypto`, then re-triage the plaintext |
+| Encrypted layers | a crypto routine gates the next stage | → `re-crypto`, then re-assess the plaintext |
 | Interleaved anti-analysis | anti-debug/anti-disasm mixed into the above | → `re-antianalysis` |
 
 Stacking is the norm in advanced malware: expect 2–4 of these at once.

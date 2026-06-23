@@ -5,7 +5,10 @@ description: Use at the start of a reverse-engineering investigation to identify
 
 # re-triage
 
-Triage is the **first look**. It is **static and safe — never execute the target.**
+Triage is the **one-time first look** that bootstraps a binary — identify it, then route
+into the hypothesis loop. Run it **once per binary** (the orchestrator on a new session,
+or `add_binary.sh` for a dropped/separate payload), not per loop iteration. It is
+**static and safe — never execute the target.**
 
 **Method, interpretation, failure modes, worked example:** `references/triage-playbook.md`.
 Heavy-artifact reads (rare in triage — its output is small) delegate mechanically — see

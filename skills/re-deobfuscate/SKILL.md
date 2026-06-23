@@ -8,7 +8,7 @@ description: Use when triage or static analysis shows a binary is packed or obfu
 The stacked-layer **loop owner**, not a one-shot unpack. Advanced malware **stacks**
 techniques, so work a loop:
 
-> **inventory → order → peel one layer → re-triage → repeat** — until entropy is
+> **inventory → order → peel one layer → re-assess → repeat** — until entropy is
 > normal, strings/imports are readable, and control flow is sane.
 
 **Method, failure modes, worked example:** `references/deobfuscate-playbook.md`.
@@ -33,11 +33,14 @@ Keep `artifacts/deobfuscation/map.md` current. Identify each layer with
 You can't read flattened code inside a packed blob. Peel packing/encryption before
 control-flow before virtualization.
 
-## 3. Peel, then re-triage
+## 3. Peel, then re-assess
 
-Apply the right handler (table below), then **re-run `re-triage` + `re-static`** on
-the result. A peeled payload may be a new binary → `add_binary.sh` and triage it as
-a peer.
+Apply the right handler (table below), then **re-assess the result in place** — re-run
+the triage scan (`triage.sh`: entropy/packer/strings) + a `re-static` look on the
+now-changed bytes to find the next layer. **Most peels stay in the *same* binary** (an
+unpacked section, a de-flattened function, a nested VM) — keep looping on it. **Only a
+peel that drops a *separate* binary** (a distinct payload file) is a new target →
+`add_binary.sh`, then bootstrap it (the `re-triage` phase, once) as a peer.
 
 | Technique | Handler / route |
 |---|---|
@@ -48,7 +51,7 @@ a peer.
 | Opaque / bogus predicates | prove constant with z3, patch out (keystone/lief) |
 | **Virtualization** | → **`re-devirtualize`** |
 | **Interleaved anti-analysis** | → **`re-antianalysis`** |
-| **Crypto-gated layer** | → **`re-crypto`**, then re-triage the plaintext |
+| **Crypto-gated layer** | → **`re-crypto`**, then re-assess the plaintext |
 
 ## Gate balance
 

@@ -8,8 +8,9 @@ MAP="$D/map.md"
 [ -f "$MAP" ] || cat > "$MAP" <<'EOF'
 # Deobfuscation map
 
-Peel the OUTERMOST layer first; re-triage between layers (packers nest; a peeled
-payload may be a new binary — register it with add_binary.sh).
+Peel the OUTERMOST layer first; re-assess (re-scan the changed bytes) between layers —
+layers nest in the SAME binary (incl. nested VMs). Only a peel that drops a SEPARATE
+payload is a new binary — register it with add_binary.sh.
 
 | # | layer / technique | handler / route | status | notes / artifact |
 |---|-------------------|-----------------|--------|------------------|
