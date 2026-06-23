@@ -32,6 +32,19 @@ reading `00-target.md`, every `NN-*-plan.md`, `findings.md`, and `artifacts/`.
 - The session `index.md` also opens with a case-level **executive summary**
   synthesizing all binaries.
 
+## Render the HTML deliverable
+
+When `REPORT.md` is final, render the styled, self-contained HTML — **never hand-write
+HTML**:
+
+```sh
+python3 render_report.py REPORT.md        # writes REPORT.html beside it
+```
+
+`render_report.py` inlines the provided `report.css` and turns the confidence tags into
+colored badges. Ship **both** `REPORT.md` (source of truth) and `REPORT.html` (the
+hand-off deliverable), and index both in the session `index.md`.
+
 ## Review
 
 Self-review the report (consistency / relevancy / evidence) per `re-planning`; as
