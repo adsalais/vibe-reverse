@@ -40,7 +40,8 @@ plan; full output stays in `artifacts/`.
 - Packed / obfuscated? (high entropy, packer sig, opaque predicates) → `re-deobfuscate`.
 - capa flags crypto / config / many obfuscated strings? → `re-crypto`, `re-config`.
 - Anti-debug / anti-VM / timing checks visible? → `re-antianalysis`.
-- A dispatcher loop + handler table (virtualized)? → `re-deobfuscate` → `re-devirtualize`.
+- A dispatcher loop + handler table (virtualized)? → `re-devirtualize` (or `re-deobfuscate`
+  first if the VM is wrapped in other layers).
 - A check compares input to a *computed* value (hash / xor / arithmetic)? →
   solver-friendly → `re-solve`.
 - Needs to run / be traced to understand? → `re-dynamic` (sandbox only).
