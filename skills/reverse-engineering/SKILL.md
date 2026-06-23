@@ -52,7 +52,7 @@ irreversible ones** (the gate + mandatory-stop list live in **`re-planning`**).
   confident + reversible; STOP if uncertain / irreversible / a mandatory gate), and
   checkpoint. The routing table below lists *candidate hypotheses*, not automatic
   decisions. REQUIRED.
-- Use **`re-scripting`** when a task needs custom code.
+- Use **`re-coding`** when a task needs custom code.
 - **Record findings** per `references/evidence-and-findings.md` — every claim cites
   evidence + a confidence tag (`[confirmed]`/`[likely]`/`[hypothesis]`/`[refuted]`);
   verify before you call it `[confirmed]`; keep dead ends.

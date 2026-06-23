@@ -22,7 +22,7 @@ each byte is the corresponding username byte plus one, then accepts iff
   check — worked, routed to static.
 - **Static** (`ghidra_decompile.sh`, objdump fallback): recovered the `+1` transform —
   worked; concluded direct inversion beats a solver here.
-- **Solve** (`re-scripting`): a 1-line pure keygen, unit-tested (`"AB"→"BC"`) and
+- **Solve** (`re-coding`): a 1-line pure keygen, unit-tested (`"AB"→"BC"`) and
   verified against the real binary (`crackme1 AB BC` → `Correct!`).
 
 ## Obfuscation & anti-analysis

@@ -12,7 +12,7 @@ Two things that ship together:
    pilot an RE investigation as a reviewed loop (`analyze → plan → human approves
    → execute → report`). Works identically in Claude Code and opencode (both read
    `~/.claude/skills/`). (v2 target: spine `reverse-engineering` / `re-planning` /
-   `re-scripting` / `re-continue`; phases `re-triage` / `re-static` /
+   `re-coding` / `re-continue`; phases `re-triage` / `re-static` /
    `re-deobfuscate` / `re-devirtualize` / `re-antianalysis` / `re-crypto` /
    `re-config` / `re-solve` / `re-dynamic` / `re-report`. `re-preflight` was removed.)
 2. **`vibe-reverse`** (`deploy/`) — an air-gapped Docker deployment of those
@@ -96,7 +96,7 @@ them needs **no image rebuild**. Only `skills/`, `deploy/entrypoint.sh`,
   uncertain / irreversible / mandatory ones (running the target, a new binary, 🐢 steps).
 - `re-report` is mandatory — write the report **even on a complete failure**.
 
-**On-the-fly Python** (`re-scripting`): test-first, with inline `# why` comments
+**On-the-fly Python** (`re-coding`): test-first, with inline `# why` comments
 aimed at a learner; runs in the global `python3` (the air-gapped image installs all
 Python tools globally — no venv).
 

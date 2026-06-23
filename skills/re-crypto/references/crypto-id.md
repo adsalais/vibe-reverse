@@ -15,5 +15,5 @@ Tips:
 - A lone repeating-key XOR is the most common malware "crypto" — find the key by
   known-plaintext (e.g. an MZ/ELF header in the plaintext) or frequency.
 - Custom ciphers: identify the primitive (sub/xor/rot/add) and the key schedule,
-  then **replicate it as a tested function** (`re-scripting`) — don't reverse by hand.
+  then **replicate it as a tested function** (`re-coding`) — don't reverse by hand.
 - Verify by decrypting a known sample and sanity-checking the plaintext.

@@ -7,7 +7,7 @@ Static analysis showed a one-byte XOR decode loop.
 
 **PASS criteria (GREEN, with re-crypto):**
 - Identifies single-byte XOR (constant/fingerprint scan or known-plaintext `{`).
-- Writes a TESTED decoder via re-scripting (pure function, known vector).
+- Writes a TESTED decoder via re-coding (pure function, known vector).
 - Produces the plaintext JSON and hands the recovered C2/keys toward re-config.
 
 **Typical RED (baseline, no skill):** eyeballs bytes or hard-codes a one-off decode

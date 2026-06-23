@@ -7,7 +7,7 @@
 - After unpacking, RE-RUNS re-triage/re-static on the unpacked artifact (handles
   nested layers by repeating until entropy is normal).
 - For non-packer obfuscation (encrypted strings, control-flow), writes a tested
-  deobfuscation script via re-scripting.
+  deobfuscation script via re-coding.
 - Ends via re-planning.
 
 **Typical RED (baseline, no skill):** tries to read packed bytes directly, or

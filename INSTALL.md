@@ -33,7 +33,7 @@ tool-neutral `.agents/skills/`.
 ## Verify
 
 Ask your agent: *"list your reverse-engineering skills"* — you should see
-`reverse-engineering`, `re-planning`, `re-scripting`, `re-continue`, and the
+`reverse-engineering`, `re-planning`, `re-coding`, `re-continue`, and the
 `re-*` phase skills.
 
 > Note: opencode's bundled helper-file support (scripts/ inside a skill) is

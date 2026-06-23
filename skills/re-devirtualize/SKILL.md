@@ -25,7 +25,7 @@ You are the VM worker the `re-deobfuscate` loop dispatches — hand back on a no
 6. **Recurse for nested VMs** — lift the inner VM first, substitute, continue.
 7. **Verify** by emulating the lift vs the original (qiling/unicorn).
 
-Adapt the templates via **`re-scripting`** (test the deterministic parts, e.g. the
+Adapt the templates via **`re-coding`** (test the deterministic parts, e.g. the
 bytecode decoder). Run heavy symbolic/lift steps per
 `../reverse-engineering/references/long-running-ops.md` (background + budget +
 **ask before killing**).

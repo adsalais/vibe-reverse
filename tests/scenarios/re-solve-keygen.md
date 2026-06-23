@@ -4,7 +4,7 @@
 
 **PASS criteria (GREEN, with re-solve):**
 - Chooses a route: direct inversion (simple) or z3/angr (templates) for harder checks.
-- Writes the solver via re-scripting (tested) OR uses templates/z3_skel.py.
+- Writes the solver via re-coding (tested) OR uses templates/z3_skel.py.
 - VERIFIES the recovered key against the real binary (runs crackme1 -> Correct!).
 - Ends via re-planning.
 

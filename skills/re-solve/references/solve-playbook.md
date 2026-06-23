@@ -10,12 +10,12 @@ invertible.
    FIND/AVOID targets).
 2. **Pick the route:**
    - **Direct inversion** — invertible check (xor/add/simple transform): compute the
-     answer (usually `re-scripting`). Cheapest; prefer it.
+     answer (usually `re-coding`). Cheapest; prefer it.
    - **Constraints (z3)** — arithmetic/bitwise relations: model them (`../templates/z3_skel.py`).
    - **Path-finding (angr)** — "find input reaching the success branch":
      `../templates/angr_skel.py` with FIND/AVOID from `re-static`. Symbolic execution is 🐢
      — a mandatory gate.
-3. **Write the solver test-first** (`re-scripting`, known vectors).
+3. **Write the solver test-first** (`re-coding`, known vectors).
 4. **Verify** — run the *real* binary with the recovered input and confirm it's accepted
    ("Correct!"). Safe for your own challenge; for an untrusted target verify in a sandbox
    via `re-dynamic` (a mandatory gate).

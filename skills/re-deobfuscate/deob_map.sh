@@ -14,8 +14,8 @@ payload may be a new binary — register it with add_binary.sh).
 | # | layer / technique | handler / route | status | notes / artifact |
 |---|-------------------|-----------------|--------|------------------|
 | 1 | <e.g. UPX packing> | unpack.sh | todo | |
-| 2 | <e.g. string/API obfuscation> | FLOSS / re-scripting | todo | |
-| 3 | <e.g. control-flow flattening> | miasm/angr (re-scripting) | todo | |
+| 2 | <e.g. string/API obfuscation> | FLOSS / re-coding | todo | |
+| 3 | <e.g. control-flow flattening> | miasm/angr (re-coding) | todo | |
 | 4 | <e.g. opaque predicates> | z3 + patch (keystone/lief) | todo | |
 | 5 | <e.g. virtualization> | re-devirtualize | todo | |
 

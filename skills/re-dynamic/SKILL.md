@@ -53,7 +53,7 @@ grant — useful to self-decrypt strings, drop a config you can dump, or run-to-
 a custom packer. It is still running code: keep it **no-network** and treat it under
 the same consent rule. Prefer it to native detonation when it suffices.
 
-- Linux/Windows user-mode: adapt `templates/qiling_emulate.py` via **`re-scripting`**
+- Linux/Windows user-mode: adapt `templates/qiling_emulate.py` via **`re-coding`**
   (set the rootfs + per-sample hooks). For Windows samples that need real execution,
   detonate in the no-network **Windows microVM** (`vmrun.sh --guest windows`).
 - Emulation can be slow — apply `../reverse-engineering/references/long-running-ops.md`

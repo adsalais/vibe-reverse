@@ -27,7 +27,7 @@ roll-your-own ciphers).
 
 ## 2. Replicate
 
-Reimplement the routine as a **tested pure function** via **`re-scripting`** (known
+Reimplement the routine as a **tested pure function** via **`re-coding`** (known
 input/output vector), handling custom key schedules / non-standard variants. Recover
 keys by known-plaintext (e.g. an MZ/ELF header in the expected output) where needed.
 

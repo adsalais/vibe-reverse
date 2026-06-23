@@ -42,9 +42,9 @@ a peer.
 | Technique | Handler / route |
 |---|---|
 | Packing | `unpack.sh` (UPX); else run-to-unpack / qiling emulate (`re-dynamic`) + lief rebuild |
-| String / API obfuscation | FLOSS, then a tested decoder via `re-scripting` |
+| String / API obfuscation | FLOSS, then a tested decoder via `re-coding` |
 | Stack-strings | FLOSS / scripted reconstruction |
-| Control-flow flattening | de-flatten via miasm/angr (`re-scripting`) |
+| Control-flow flattening | de-flatten via miasm/angr (`re-coding`) |
 | Opaque / bogus predicates | prove constant with z3, patch out (keystone/lief) |
 | **Virtualization** | → **`re-devirtualize`** |
 | **Interleaved anti-analysis** | → **`re-antianalysis`** |

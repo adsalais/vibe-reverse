@@ -46,7 +46,7 @@ plan; full output stays in `artifacts/`.
 - Needs to run / be traced to understand? → `re-dynamic` (sandbox only).
 - Protections (PIE / NX / RELRO / canary) — note for later phases.
 
-Use **`re-scripting`** for custom parsing/analysis code.
+Use **`re-coding`** for custom parsing/analysis code.
 
 ## Always
 

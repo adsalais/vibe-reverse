@@ -25,7 +25,7 @@ capa. Map each hit via `references/anti-analysis-catalog.md`.
 
 ## 2. Neutralize (pick per technique, cite the catalog)
 
-- **Patch the check out** (keystone/lief via `re-scripting`).
+- **Patch the check out** (keystone/lief via `re-coding`).
 - **Force the return** in gdb (e.g. set the ptrace/IsDebuggerPresent result).
 - **Make the emulator lie** — qiling hooks faking `TracerPid`/CPUID/timing.
 

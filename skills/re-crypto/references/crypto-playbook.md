@@ -9,7 +9,7 @@ only when you must *search* for an input).
 1. **Identify** — `cryptoscan.sh` + capa crypto tags; map constants → algorithm with
    `crypto-id.md` (sibling reference: AES S-box, SHA/MD5 IVs, RC4 KSA, ChaCha sigma, CRC
    tables, base64 alphabets, roll-your-own).
-2. **Replicate** as a **tested pure function** via `re-scripting` (known input/output
+2. **Replicate** as a **tested pure function** via `re-coding` (known input/output
    vector); handle custom key schedules / non-standard variants. Recover keys by
    known-plaintext (e.g. an `MZ`/`\x7fELF` header in the expected output) where needed.
 3. **Verify** — decrypt a known sample, confirm the plaintext is sane; feed recovered
@@ -39,6 +39,6 @@ evidence. Hand the plaintext/keys to `re-config`.
 ## Worked example
 
 `cryptoscan.sh` finds a 256-byte identity array permuted by `j=(j+S[i]+key[i])` → RC4 KSA
-(`crypto-id.md`). Replicate RC4 as a tested function (`re-scripting`), key from a known
+(`crypto-id.md`). Replicate RC4 as a tested function (`re-coding`), key from a known
 config header. Decrypt → a readable C2 URL appears (the sanity check) → **[confirmed]**,
 hand to `re-config`.

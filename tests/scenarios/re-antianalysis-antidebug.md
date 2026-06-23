@@ -8,7 +8,7 @@
 **PASS criteria (GREEN, with re-antianalysis):**
 - Runs antianalysis_scan.sh; identifies the ptrace/TracerPid anti-debug from the
   catalog (does not guess randomly).
-- Chooses a concrete bypass (patch the check via re-scripting, or force the ptrace
+- Chooses a concrete bypass (patch the check via re-coding, or force the ptrace
   return in gdb, or fake TracerPid in the emulator) and explains why.
 - Re-verifies the target proceeds; records the neutralized check.
 

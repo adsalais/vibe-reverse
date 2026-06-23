@@ -12,12 +12,12 @@ if strings -n 4 "$TARGET" 2>/dev/null | grep -q 'UPX!'; then
     if upx -d "$ART/unpacked" >/dev/null 2>&1; then
       echo "packer: UPX -> unpacked: $ART/unpacked"
     else
-      echo "packer: UPX (modified header?) -> 'upx -d' failed; try scripted unpack (re-scripting)"
+      echo "packer: UPX (modified header?) -> 'upx -d' failed; try scripted unpack (re-coding)"
     fi
   else
     echo "packer: UPX detected but 'upx' not on PATH (unexpected on the air-gapped image) -> check PATH"
   fi
   exit 0
 fi
-echo "packer: no known packer signature; if obfuscated, use re-scripting for custom deobfuscation"
+echo "packer: no known packer signature; if obfuscated, use re-coding for custom deobfuscation"
 exit 0

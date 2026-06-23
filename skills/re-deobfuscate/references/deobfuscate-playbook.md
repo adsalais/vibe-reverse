@@ -46,6 +46,6 @@ on. Don't over-peel a layer you've already removed.
 
 A dropper: triage shows entropy 7.9 + `UPX!`. Top hypothesis: UPX packing → `unpack.sh`
 → re-triage. Entropy normal now, but every function routes through one dispatcher with
-equal-size blocks → control-flow flattening → de-flatten via miasm (`re-scripting`) →
+equal-size blocks → control-flow flattening → de-flatten via miasm (`re-coding`) →
 re-triage → clean C. Record each peel as a `[confirmed]` finding (evidence: before/after
 artifacts).

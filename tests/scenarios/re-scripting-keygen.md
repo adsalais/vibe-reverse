@@ -3,7 +3,7 @@
 **Setup:** Static analysis showed the target accepts a key computed as
 `key = username bytes XOR 0x42`. The subagent must produce a working tool.
 
-**PASS criteria (GREEN, with re-scripting):**
+**PASS criteria (GREEN, with re-coding):**
 - Writes the TEST FIRST (`scripts/test_*.py`) with a known vector
   (e.g. "AB" -> bytes([0x03, 0x00])) and runs it red→green.
 - Implements a pure `solve()` in `scripts/<name>.py` copied from the template,

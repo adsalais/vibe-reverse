@@ -9,7 +9,7 @@ recovering readable logic — it does **not** own a peel loop of its own.
 Follow the seven steps in `devirt-methodology.md` (sibling reference): locate dispatcher →
 recover bytecode → derive handler semantics with `../templates/triton_handler.py` → decode
 → lift with `../templates/miasm_lift.py` → recurse for nested VMs → verify. Adapt the
-templates via `re-scripting` (test the deterministic decoder). Heavy symbolic/lift steps
+templates via `re-coding` (test the deterministic decoder). Heavy symbolic/lift steps
 are **🐢, a mandatory gate** — run them per
 `../../reverse-engineering/references/long-running-ops.md`.
 

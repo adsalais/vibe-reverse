@@ -95,7 +95,7 @@ other approaches,"* and you redirect. Numbered plans are append-only, so the tra
 |---|---|---|
 | `reverse-engineering` | Entry point: authorization, scaffolding, routing (air-gapped) | ✅ built |
 | `re-planning` | The plan artifact + self-review + STOP-for-approval gate + STATE.md checkpoint | ✅ built |
-| `re-scripting` | On-the-fly Python with TDD + learner-oriented docs | ✅ built |
+| `re-coding` | On-the-fly Python with TDD + learner-oriented docs | ✅ built |
 | `re-continue` | Resume a paused session from `STATE.md` (read-only; stops at the gate) | ✅ built |
 
 **Phases** — the native/CTF binary vertical:
@@ -219,7 +219,7 @@ malware uses the no-network Windows microVM instead.)
 ## 8. On-the-fly scripting
 
 When a phase needs real code (a parser, a deobfuscation routine, a keygen, an
-angr/z3 harness), `re-scripting` writes it **test-first** (reusing
+angr/z3 harness), `re-coding` writes it **test-first** (reusing
 `superpowers:test-driven-development`), from `script_template.py`, with a module
 docstring + inline `# why` comments aimed at a learner. Code and test land in the
 investigation's `scripts/`.
