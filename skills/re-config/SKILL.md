@@ -8,6 +8,11 @@ description: Use when extracting a malware sample's configuration and indicators
 Turn recovered data into a **defender deliverable** — `config.json` + `iocs.md` +
 a **YARA rule**, written into the binary's folder.
 
+**Method, failure modes, worked example:** `references/config-playbook.md`.
+Reading a large strings/FLOSS dump to extract IOC candidates is **mechanical** — delegate
+it per `../reverse-engineering/references/delegating-to-subagents.md`.
+The sources/fields you pursue are candidate hypotheses for the `re-planning` loop — it ranks and gates.
+
 ## Sources
 
 Decrypted strings/config from **`re-crypto`** / FLOSS, config structs from
