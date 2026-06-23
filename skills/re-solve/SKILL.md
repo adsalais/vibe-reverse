@@ -7,6 +7,11 @@ description: Use when a reverse-engineering check compares input to a computed v
 
 Recover an input that satisfies a check.
 
+**Method, route choice, failure modes, worked example:** `references/solve-playbook.md`.
+Reading angr/solver output to extract the result is **mechanical** — delegate it per
+`../reverse-engineering/references/delegating-to-subagents.md`.
+The route you pick (invert / z3 / angr) is a candidate hypothesis for the `re-planning` loop — it ranks and gates.
+
 ## Pick a route
 
 - **Direct inversion** — the check is invertible (xor / add / simple transform):
