@@ -9,6 +9,11 @@ Identify & **replicate** crypto/encoding to decrypt strings/config/C2 or forge
 values. Distinct from `re-solve` (SMT/symbolic) — reach for `re-solve` only when you
 must *search* for an input.
 
+**Method, failure modes, worked example:** `references/crypto-playbook.md`.
+Reading a large dump to extract a routine's bytes/constants is **mechanical** — delegate
+it per `../reverse-engineering/references/delegating-to-subagents.md`.
+The algorithm/route you pick is a candidate hypothesis for the `re-planning` loop — it ranks and gates.
+
 ## 1. Identify
 
 ```sh
