@@ -11,6 +11,11 @@ a loop:
 > **inventory → order → peel one layer → re-triage → repeat** — until entropy is
 > normal, strings/imports are readable, and control flow is sane.
 
+**Method, failure modes, worked example:** `references/deobfuscate-playbook.md`.
+Reading a large lifted/handler or capa/FLOSS dump to extract the relevant lines is
+**mechanical** — delegate it per `../reverse-engineering/references/delegating-to-subagents.md`.
+The handlers/routes you pick are candidate hypotheses for the `re-planning` loop — it ranks and gates.
+
 ## 1. Inventory the layers
 
 Use triage/static signals + `re-static`'s `static_scan.sh` (capa/FLOSS) + DIE
