@@ -40,6 +40,9 @@ oletools
 # instead (see deploy/Dockerfile) and drop this line.
 triton-library
 
+# render REPORT.md -> self-contained REPORT.html (re-report/render_report.py)
+markdown
+
 # NOTE: pin exact versions once the first container build succeeds (the build's
 # import check is the gate); record the resolved versions here for reproducibility.
 # capa + FLOSS are NOT here — they ship as standalone binaries (deploy/Dockerfile)
