@@ -7,6 +7,11 @@ description: Use when reverse engineering requires running or tracing the target
 
 **This phase RUNS the target.** That is dangerous for untrusted binaries.
 
+**Method, technique choice, failure modes, worked example:** `references/dynamic-playbook.md`.
+Reading a long trace to extract the relevant calls is **mechanical** — delegate it per
+`../reverse-engineering/references/delegating-to-subagents.md`; never delegate the decision
+to run.
+
 ## Core rule
 
 Run the target **only** with (1) explicit user consent **and** (2) a sandbox:
