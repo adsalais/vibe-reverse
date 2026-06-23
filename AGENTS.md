@@ -99,12 +99,7 @@ aimed at a learner; runs in the global `python3` (the air-gapped image installs 
 Python tools globally — no venv).
 
 **Workflow & git**: follow the `superpowers` flow (brainstorm → write plan →
-execute → finish). TDD, small frequent commits, DRY / YAGNI. End every commit
-message with:
-
-```
-Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
-```
+execute → finish). TDD, small frequent commits, DRY / YAGNI.necer reference claude as the co-author
 
 ## Deployment notes (hard-won — don't regress)
 

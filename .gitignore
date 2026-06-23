@@ -22,3 +22,4 @@ tests/fixtures/config_blob.bin
 deploy/ca.pem
 dist/
 todo.txt
+examples/
